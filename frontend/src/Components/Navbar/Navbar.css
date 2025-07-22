@@ -25,6 +25,13 @@
   flex-shrink: 0;
 }
 
+/* Location form - flexbox layout for input and button */
+.location-form {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
 /* Location input field - lighter than navbar background */
 .location-input {
   background: #ecf0f1;  /* Light grey background */
@@ -33,7 +40,7 @@
   padding: 0.75rem 1rem;
   font-size: 1rem;
   color: #2c3e50;
-  width: 250px;
+  width: 250px; /* Increased width for better placeholder visibility */
   transition: all 0.2s ease;
 }
 
@@ -57,6 +64,41 @@
   background: #f8f9fa;
 }
 
+/* Enter button styling */
+.enter-button {
+  background: #3498db;  /* Blue background */
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+/* Hover state for enter button */
+.enter-button:hover:not(:disabled) {
+  background: #2980b9;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3);
+}
+
+/* Active state for enter button */
+.enter-button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+/* Disabled state for enter button */
+.enter-button:disabled {
+  background: #bdc3c7;
+  color: #7f8c8d;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
 /* Responsive design for smaller screens */
 @media (max-width: 768px) {
   .navbar {
@@ -69,7 +111,17 @@
     font-size: 1.5rem;
   }
   
+  .location-form {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
   .location-input {
+    width: 100%;
+    max-width: 300px;
+  }
+  
+  .enter-button {
     width: 100%;
     max-width: 300px;
   }

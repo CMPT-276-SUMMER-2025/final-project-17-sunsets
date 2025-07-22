@@ -5,12 +5,13 @@ import './Navbar.css';
  * Navbar Component
  * 
  * This component displays the application title and provides a location input
- * for users to search for events in their area.
+ * with an Enter button for users to search for events in their area.
  * 
  * @param {Function} onLocationChange - Callback function called when location changes
  * @param {string} onLocationChange.location - New location value
+ * @param {Function} onLocationSubmit - Callback function called when Enter button is clicked
  */
-const Navbar = ({ onLocationChange }) => {
+const Navbar = ({ onLocationChange, onLocationSubmit }) => {
   // State to manage the location input value
   const [location, setLocation] = useState('');
 
@@ -33,16 +34,23 @@ const Navbar = ({ onLocationChange }) => {
   };
 
   /**
-   * Handle form submission (Enter key press)
+   * Handle form submission (Enter key press or button click)
    * 
-   * This function is called when the user presses Enter in the location field.
-   * It prevents the default form submission behavior.
+   * This function is called when the user presses Enter or clicks the Enter button.
+   * It notifies the parent component that the location has been submitted.
    * 
    * @param {Event} e - The form submission event object
    */
   const handleSubmit = (e) => {
     e.preventDefault();
-    // The location change is already handled by handleLocationChange
+    
+    // Only submit if location is not empty
+    if (location.trim()) {
+      // Notify parent component that location has been submitted
+      if (onLocationSubmit) {
+        onLocationSubmit(location.trim());
+      }
+    }
   };
 
   return (
@@ -52,16 +60,23 @@ const Navbar = ({ onLocationChange }) => {
         <h1>MetropoLive</h1>
       </div>
       
-      {/* Location input on the right */}
+      {/* Location input and Enter button on the right */}
       <div className="navbar-location">
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className="location-form">
           <input
             type="text"
             value={location}
             onChange={handleLocationChange}
-            placeholder="Enter your city..."
+            placeholder="Enter your location to start..."
             className="location-input"
           />
+          <button 
+            type="submit" 
+            className="enter-button"
+            disabled={!location.trim()}
+          >
+            Enter
+          </button>
         </form>
       </div>
     </nav>

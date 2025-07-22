@@ -6,23 +6,25 @@ import './EventSearch.css';
 /**
  * EventSearch Component
  * 
- * This component provides a form for users to search for events.
- * It collects event count, distance radius, date range, price range, and optional keywords, then passes this data
- * to the parent component when the form is submitted.
- * Location is now handled by the header component.
+ * This provides a form for users to search for events.
+ * It collects user input for event count, distance radius, date range, price range, and optional keywords, 
+ * then passes this data to the parent component when the form is submitted. 
+ * Location is now handled by the header component, and the search preferences will only become visible after the
+ * user has entered a valid location in the header. 
  * 
- * @param {Function} onSearch - Callback function called when form is submitted
+ * @param {Function} onSearch - Callback function called when search pref form is submitted
  * @param {Object} onSearch.params - Search parameters object
  * @param {number} onSearch.params.eventCount - Number of events to display
  * @param {number} onSearch.params.radius - Search radius in kilometers
  * @param {string} onSearch.params.startDate - Start date for event search (YYYY-MM-DD)
- * @param {string} onSearch.params.endDate - End date for event search (YYYY-MM-DD)
+ * @param {string} onSearch.params.endDate - End date for event search (same as start date)
  * @param {number} onSearch.params.priceMin - Minimum ticket price in CAD
- * @param {number} onSearch.params.priceMax - Maximum ticket price in CAD
+ * @param {number} onSearch.params.priceMax - Maximum ticket price (also CAD)
  * @param {string} onSearch.params.keywords - Optional keywords to filter events
- * @param {string} currentLocation - Current location from header component
+ * @param {string} currentLocation - Current location from site header component
+ * @param {boolean} isVisible - Whether the search form should be visible (dependent on valid location input)
  */
-const EventSearch = ({ onSearch, currentLocation }) => {
+const EventSearch = ({ onSearch, currentLocation, isVisible = false }) => {
   // useState hook to manage the form data
   // searchData: Object containing all form field values
   // setSearchData: Function to update the form data
@@ -40,16 +42,17 @@ const EventSearch = ({ onSearch, currentLocation }) => {
    * Handle form submission
    * 
    * This function is called when the user clicks the "Search Events" button
-   * or presses Enter in any form field.
+   * or presses Enter.
    * 
    * @param {Event} e - The form submission event object
    */
   const handleSubmit = (e) => {
-    // Prevent the default form submission behavior (page reload)
+    // Prevents the browser's default behavior for form submission, which is to reload the entire page.
     e.preventDefault();
     
     // Check if location is provided
     if (!currentLocation.trim()) {
+      // If no location is provided, display an alert and return
       alert('Please enter a location in the header to search for events.');
       return;
     }
@@ -62,7 +65,7 @@ const EventSearch = ({ onSearch, currentLocation }) => {
     };
     
     // Call the onSearch function passed from the parent component
-    // This passes the combined search parameters to the parent component
+    // Passes the combined search parameters as an argument to onSearch
     onSearch(searchParams);
   };
 
@@ -96,7 +99,7 @@ const EventSearch = ({ onSearch, currentLocation }) => {
 
   // JSX return statement - renders the search form
   return (
-    <div className="event-search">
+    <div className={`event-search ${isVisible ? 'visible' : 'hidden'}`}>
       <h2>Find Events Near You</h2>
       {/* 
         Form element with onSubmit handler

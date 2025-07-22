@@ -3,7 +3,24 @@
   max-width: 600px;
   margin: 0 auto;
   padding: 0;
+  transition: opacity 0.5s ease, transform 0.5s ease;
 }
+
+/* Hidden state - transparent and slightly moved up */
+.event-search.hidden {
+  opacity: 0;
+  transform: translateY(-20px);
+  pointer-events: none;
+}
+
+/* Visible state - fully opaque and in position */
+.event-search.visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+
 
 /* Search form title styling */
 .event-search h2 {
