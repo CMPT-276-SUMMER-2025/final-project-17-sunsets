@@ -1,159 +1,97 @@
+// React hooks for managing component state and side effects
 import { useState, useEffect } from 'react';
+// Import our custom EventCard component to display individual events
 import EventCard from '../EventCard/EventCard';
+// Import our API service function to fetch real events from Ticketmaster
+import { fetchEvents } from '../../services/ticketmasterApi';
+// Import CSS styles for this component
 import './EventList.css';
 
+/**
+ * EventList Component
+ * 
+ * This component displays a list of events fetched from the Ticketmaster API.
+ * It handles the entire lifecycle of fetching, displaying, and managing events.
+ * 
+ * @param {Object} searchParams - Search criteria passed from the parent component
+ * @param {string} searchParams.location - City to search for events
+ * @param {string} searchParams.keywords - Optional keywords to filter events
+ * @param {number} searchParams.eventCount - Number of events to display
+ */
 const EventList = ({ searchParams }) => {
-  // State management for events, loading state, and error handling
+  // React useState hook creates state variables that trigger re-renders when changed
+  // Each useState call returns an array: [currentValue, functionToUpdateValue]
+  
+  // events: Array of event objects fetched from the API
+  // setEvents: Function to update the events array
   const [events, setEvents] = useState([]);
+  
+  // loading: Boolean that tracks if we're currently fetching data from the API
+  // setLoading: Function to update the loading state
   const [loading, setLoading] = useState(false);
+  
+  // error: String containing error message, or null if no error
+  // setError: Function to update the error state
   const [error, setError] = useState(null);
 
-  // Mock data - replace this with actual API response later
-  const mockEvents = [
-    {
-      id: 1,
-      title: "Tech Meetup: React Best Practices",
-      dateTime: "2024-01-15T18:00:00",
-      location: "Downtown Conference Center",
-      description: "Join us for an evening of React development tips and tricks. Learn from industry experts about the latest best practices, performance optimization techniques, and advanced patterns that will take your React skills to the next level.",
-      organizer: "Tech Community Vancouver",
-      category: "Technology",
-      price: "Free"
-    },
-    {
-      id: 2,
-      title: "Jazz Night at The Blue Note",
-      dateTime: "2024-01-16T20:00:00",
-      location: "The Blue Note Jazz Club",
-      description: "Experience an unforgettable evening of live jazz music featuring local and international artists. Enjoy great food, drinks, and the smooth sounds of jazz in an intimate setting.",
-      organizer: "The Blue Note",
-      category: "Music",
-      price: "$25"
-    },
-    {
-      id: 3,
-      title: "Yoga in the Park",
-      dateTime: "2024-01-17T09:00:00",
-      location: "Stanley Park",
-      description: "Start your day with a refreshing yoga session in the beautiful surroundings of Stanley Park. All skill levels welcome. Don't forget to bring your own mat!",
-      organizer: "Vancouver Yoga Collective",
-      category: "Health & Wellness",
-      price: "Free"
-    },
-    {
-      id: 4,
-      title: "Food Truck Festival",
-      dateTime: "2024-01-18T12:00:00",
-      location: "Granville Island",
-      description: "Sample delicious cuisine from Vancouver's best food trucks. From gourmet burgers to international street food, there's something for everyone. Live music and family-friendly activities included.",
-      organizer: "Vancouver Food Truck Association",
-      category: "Food & Drink",
-      price: "Free entry"
-    },
-    {
-      id: 5,
-      title: "Startup Networking Mixer",
-      dateTime: "2024-01-19T19:00:00",
-      location: "Innovation Hub",
-      description: "Connect with fellow entrepreneurs, investors, and startup enthusiasts. Share ideas, find collaborators, and build your professional network in Vancouver's thriving startup community.",
-      organizer: "Vancouver Startup Network",
-      category: "Business",
-      price: "$15"
-    },
-    {
-      id: 6,
-      title: "Art Gallery Opening",
-      dateTime: "2024-01-20T18:30:00",
-      location: "Contemporary Art Gallery",
-      description: "Be among the first to see our latest exhibition featuring works from emerging local artists. Enjoy wine and cheese while exploring thought-provoking contemporary art pieces.",
-      organizer: "Contemporary Art Gallery",
-      category: "Arts & Culture",
-      price: "Free"
-    },
-    {
-      id: 7,
-      title: "Hiking Adventure: Grouse Mountain",
-      dateTime: "2024-01-21T08:00:00",
-      location: "Grouse Mountain Trailhead",
-      description: "Join our guided hiking group for a challenging but rewarding trek up Grouse Mountain. Experience breathtaking views of Vancouver and the surrounding mountains. All fitness levels welcome.",
-      organizer: "Vancouver Hiking Club",
-      category: "Outdoor & Adventure",
-      price: "$10"
-    },
-    {
-      id: 8,
-      title: "Craft Beer Tasting",
-      dateTime: "2024-01-22T19:00:00",
-      location: "Craft Beer Market",
-      description: "Sample a variety of locally brewed craft beers from Vancouver's top breweries. Learn about brewing techniques, flavor profiles, and the history of craft beer in the Pacific Northwest.",
-      organizer: "Craft Beer Market",
-      category: "Food & Drink",
-      price: "$35"
-    },
-    {
-      id: 9,
-      title: "Photography Workshop",
-      dateTime: "2024-01-23T14:00:00",
-      location: "Vancouver Public Library",
-      description: "Improve your photography skills with hands-on instruction from professional photographers. Learn composition, lighting, and post-processing techniques. Bring your own camera.",
-      organizer: "Vancouver Photography Society",
-      category: "Education",
-      price: "$45"
-    },
-    {
-      id: 10,
-      title: "Board Game Night",
-      dateTime: "2024-01-24T18:00:00",
-      location: "Strategy Games Cafe",
-      description: "Spend an evening playing board games with fellow enthusiasts. We'll have a wide selection of games available, from classic favorites to the latest releases. No experience necessary!",
-      organizer: "Strategy Games Cafe",
-      category: "Social",
-      price: "$5"
-    }
-  ];
-
-  // Simulate API call with loading state
-  const fetchEvents = async (params) => {
+  /**
+   * Fetch events from Ticketmaster API
+   * 
+   * This function handles the API call to get events based on search parameters.
+   * It manages loading states and error handling for a smooth user experience.
+   * 
+   * @param {Object} params - Search parameters (location, keywords, eventCount)
+   */
+  const fetchEventsData = async (params) => {
+    // Set loading state to true to show loading spinner
     setLoading(true);
+    
+    // Clear any previous errors
     setError(null);
     
     try {
-      // Simulate API delay for realistic user experience
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Call our API service function to fetch events from Ticketmaster
+      // await pauses execution until the API call completes
+      const eventsData = await fetchEvents(params);
       
-      // Filter events based on keywords if provided
-      let filteredEvents = mockEvents;
-      if (params.keywords) {
-        const keywords = params.keywords.toLowerCase().split(',').map(k => k.trim());
-        filteredEvents = mockEvents.filter(event => 
-          keywords.some(keyword => 
-            event.title.toLowerCase().includes(keyword) ||
-            event.description.toLowerCase().includes(keyword) ||
-            event.category.toLowerCase().includes(keyword)
-          )
-        );
-      }
-
-      // Limit to requested number of events
-      filteredEvents = filteredEvents.slice(0, params.eventCount);
-      
-      setEvents(filteredEvents);
+      // Update the events state with the fetched data
+      // This will trigger a re-render of the component with the new events
+      setEvents(eventsData);
     } catch (err) {
-      setError('Failed to fetch events. Please try again.');
+      // If the API call fails, set an error message for the user
+      // Use the error message from the API or a default message
+      setError(err.message || 'Failed to fetch events. Please try again.');
+      
+      // Log the error for debugging purposes
       console.error('Error fetching events:', err);
     } finally {
+      // Always set loading to false, whether the API call succeeded or failed
+      // This ensures the loading spinner disappears
       setLoading(false);
     }
   };
 
-  // Fetch events when search parameters change
+  /**
+   * useEffect Hook - React's way of handling side effects
+   * 
+   * This hook runs whenever the searchParams prop changes.
+   * It automatically fetches new events when the user performs a new search.
+   * 
+   * The second parameter [searchParams] is the dependency array:
+   * - If searchParams changes, the effect runs again
+   * - If searchParams stays the same, the effect doesn't run
+   */
   useEffect(() => {
+    // Only fetch events if searchParams exists (user has performed a search)
     if (searchParams) {
-      fetchEvents(searchParams);
+      fetchEventsData(searchParams);
     }
-  }, [searchParams]);
+  }, [searchParams]); // Dependency array - effect runs when searchParams changes
 
-  // Loading state with spinner animation
+  // Conditional rendering based on component state
+  // React components can return different JSX based on their state
+  
+  // Show loading spinner while fetching data from API
   if (loading) {
     return (
       <div className="event-list">
@@ -165,19 +103,20 @@ const EventList = ({ searchParams }) => {
     );
   }
 
-  // Error state with retry button
+  // Show error message if API call failed
   if (error) {
     return (
       <div className="event-list">
         <div className="error">
           <p>{error}</p>
-          <button onClick={() => fetchEvents(searchParams)}>Try Again</button>
+          {/* onClick handler calls fetchEventsData to retry the API call */}
+          <button onClick={() => fetchEventsData(searchParams)}>Try Again</button>
         </div>
       </div>
     );
   }
 
-  // Initial state when no search has been performed
+  // Show initial message when user hasn't performed a search yet
   if (!searchParams) {
     return (
       <div className="event-list">
@@ -188,7 +127,7 @@ const EventList = ({ searchParams }) => {
     );
   }
 
-  // No results found state
+  // Show message when API returned no events for the search criteria
   if (events.length === 0) {
     return (
       <div className="event-list">
@@ -200,13 +139,21 @@ const EventList = ({ searchParams }) => {
     );
   }
 
-  // Display events with count and individual event cards
+  // Main render - display the list of events
   return (
     <div className="event-list">
+      {/* Show count of events found */}
       <div className="event-count">
         <h3>Found {events.length} event{events.length !== 1 ? 's' : ''} near {searchParams.location}</h3>
       </div>
+      
+      {/* Container for all event cards */}
       <div className="events-container">
+        {/* 
+          .map() creates a new array by transforming each event object into an EventCard component
+          key={event.id} is required by React to efficiently update the list when data changes
+          event={event} passes the event data as a prop to the EventCard component
+        */}
         {events.map(event => (
           <EventCard key={event.id} event={event} />
         ))}

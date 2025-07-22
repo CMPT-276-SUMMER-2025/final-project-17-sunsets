@@ -44,6 +44,8 @@
   transition: border-color 0.2s ease;
 }
 
+
+
 /* Focus state with blue border and subtle shadow */
 .form-group input:focus,
 .form-group select:focus {
