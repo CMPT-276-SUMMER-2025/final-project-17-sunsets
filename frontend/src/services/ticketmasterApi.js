@@ -1,4 +1,5 @@
-// API Configuration - These constants store the Ticketmaster API credentials and endpoint
+// API Configuration - These constants store the Ticketmaster API credentials and endpoint 
+// A proxy server will have to be setup in the future to avoid misuse of the following API key.
 const API_KEY = 'PKGwgs7x66R2cv0x8CydvJAELtiqTxAV';
 const BASE_URL = 'https://app.ticketmaster.com/discovery/v2/events.json';
 
@@ -65,6 +66,7 @@ const transformEventData = (ticketmasterEvent) => {
  * @param {string} searchParams.location - City name to search in
  * @param {string} searchParams.keywords - Optional keywords to filter events
  * @param {number} searchParams.eventCount - Number of events to return
+ * @param {number} searchParams.radius - Search radius in miles (default 50)
  * @returns {Promise<Array>} Promise that resolves to an array of transformed events
  */
 export const fetchEvents = async (searchParams) => {
@@ -90,7 +92,8 @@ export const fetchEvents = async (searchParams) => {
     }
 
     // Set search radius and units for location-based searches
-    params.append('radius', '50');    // Search within 50 miles
+    // Use user-provided radius or default to 50 miles
+    params.append('radius', searchParams.radius || 50);
     params.append('unit', 'miles');   // Use miles as the unit
 
     // Note: Removed countryCode parameter to allow global search
@@ -132,65 +135,5 @@ export const fetchEvents = async (searchParams) => {
   }
 };
 
-// Get user's current location using browser geolocation
-export const getCurrentLocation = () => {
-  return new Promise((resolve, reject) => {
-    if (!navigator.geolocation) {
-      reject(new Error('Geolocation is not supported by this browser.'));
-      return;
-    }
-
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        resolve({
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude
-        });
-      },
-      (error) => {
-        reject(new Error('Unable to retrieve your location. Please enter your city manually.'));
-      },
-      {
-        enableHighAccuracy: true,
-        timeout: 10000,
-        maximumAge: 300000 // 5 minutes
-      }
-    );
-  });
-};
-
-// Fetch events by coordinates (for location-based search)
-export const fetchEventsByCoordinates = async (latitude, longitude, searchParams) => {
-  try {
-    const params = new URLSearchParams({
-      apikey: API_KEY,
-      size: searchParams.eventCount || 10,
-      sort: 'date,asc',
-      latlong: `${latitude},${longitude}`,
-      radius: '50',
-      unit: 'miles'
-    });
-
-    if (searchParams.keywords) {
-      params.append('keyword', searchParams.keywords);
-    }
-
-    const response = await fetch(`${BASE_URL}?${params.toString()}`);
-    
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const data = await response.json();
-    
-    if (!data._embedded || !data._embedded.events) {
-      return [];
-    }
-
-    const transformedEvents = data._embedded.events.map(transformEventData);
-    return transformedEvents;
-  } catch (error) {
-    console.error('Error fetching events by coordinates:', error);
-    throw new Error('Failed to fetch events for your location. Please try again.');
-  }
-}; 
+// Note: Removed deprecated coordinate-based search functionality
+// The app now uses city-based search which is more user-friendly and reliable 

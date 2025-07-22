@@ -17,6 +17,7 @@ import './EventList.css';
  * @param {string} searchParams.location - City to search for events
  * @param {string} searchParams.keywords - Optional keywords to filter events
  * @param {number} searchParams.eventCount - Number of events to display
+ * @param {number} searchParams.radius - Search radius in miles
  */
 const EventList = ({ searchParams }) => {
   // React useState hook creates state variables that trigger re-renders when changed

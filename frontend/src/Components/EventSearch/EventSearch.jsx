@@ -7,23 +7,25 @@ import './EventSearch.css';
  * EventSearch Component
  * 
  * This component provides a form for users to search for events.
- * It collects location, event count, and optional keywords, then
- * passes this data to the parent component when the form is submitted.
+ * It collects event count, distance radius, and optional keywords, then passes this data
+ * to the parent component when the form is submitted.
+ * Location is now handled by the header component.
  * 
  * @param {Function} onSearch - Callback function called when form is submitted
  * @param {Object} onSearch.params - Search parameters object
- * @param {string} onSearch.params.location - City to search for events
  * @param {number} onSearch.params.eventCount - Number of events to display
+ * @param {number} onSearch.params.radius - Search radius in miles
  * @param {string} onSearch.params.keywords - Optional keywords to filter events
+ * @param {string} currentLocation - Current location from header component
  */
-const EventSearch = ({ onSearch }) => {
+const EventSearch = ({ onSearch, currentLocation }) => {
   // useState hook to manage the form data
   // searchData: Object containing all form field values
   // setSearchData: Function to update the form data
   const [searchData, setSearchData] = useState({
-    location: '',        // City name entered by user
     eventCount: 10,      // Number of events to show (default 10)
-    keywords: ''         // Optional search keywords
+    radius: 50,          // Search radius in miles (default 50)
+    category: ''         // Optional category filter
   });
 
   /**
@@ -38,9 +40,22 @@ const EventSearch = ({ onSearch }) => {
     // Prevent the default form submission behavior (page reload)
     e.preventDefault();
     
+    // Check if location is provided
+    if (!currentLocation.trim()) {
+      alert('Please enter a location in the header to search for events.');
+      return;
+    }
+    
+    // Combine search data with location from header
+    const searchParams = {
+      ...searchData,
+      location: currentLocation,
+      keywords: searchData.category  // Map category to keywords for API compatibility
+    };
+    
     // Call the onSearch function passed from the parent component
-    // This passes the current searchData to the parent component
-    onSearch(searchData);
+    // This passes the combined search parameters to the parent component
+    onSearch(searchParams);
   };
 
   /**
@@ -64,7 +79,7 @@ const EventSearch = ({ onSearch }) => {
     // 3. Updates only the property that changed ([name]: value)
     setSearchData(prev => ({
       ...prev,
-      [name]: value
+      [name]: name === 'eventCount' || name === 'radius' ? parseInt(value) : value
     }));
   };
 
@@ -79,65 +94,72 @@ const EventSearch = ({ onSearch }) => {
         When the form is submitted (Enter key or button click), handleSubmit is called
       */}
       <form onSubmit={handleSubmit} className="search-form">
-        {/* Location input field - required */}
+
+        
+        {/* Category input for filtering events */}
         <div className="form-group">
-          <label htmlFor="location">Location:</label>
+          <label htmlFor="category">Category:</label>
           {/* 
-            Controlled input component
-            - value={searchData.location} makes this a controlled component (React manages the value)
-            - onChange={handleChange} calls our handler whenever the user types
-            - name="location" is used in handleChange to know which field changed
-            - required ensures the form can't be submitted without a location
+            Category input field
+            - Optional field for filtering events by category
+            - placeholder provides helpful examples
+            - Same controlled component pattern as other inputs
           */}
           <input
             type="text"
-            id="location"
-            name="location"
-            value={searchData.location}
+            id="category"
+            name="category"
+            value={searchData.category}
             onChange={handleChange}
-            placeholder="Enter your city or address"
-            required
+            placeholder="e.g., music, sports, food"
           />
         </div>
         
-        {/* Dropdown to select number of events to display */}
+        {/* Distance radius input */}
+        <div className="form-group">
+          <label htmlFor="radius">Search Radius (miles):</label>
+          {/* 
+            Distance radius input field
+            - Allows users to enter any radius value they want
+            - Controlled component pattern with value and onChange
+            - name="radius" identifies this field in handleChange
+            - type="number" ensures only numeric input
+            - min="1" prevents negative or zero values
+            - max="500" sets a reasonable upper limit
+          */}
+          <input
+            type="number"
+            id="radius"
+            name="radius"
+            value={searchData.radius}
+            onChange={handleChange}
+            min="1"
+            max="500"
+            placeholder="e.g., 25"
+          />
+        </div>
+        
+        {/* Number of events input */}
         <div className="form-group">
           <label htmlFor="eventCount">Number of Events:</label>
           {/* 
-            Controlled select component
-            - value={searchData.eventCount} makes this controlled by React
-            - onChange={handleChange} updates state when selection changes
+            Number of events input field
+            - Allows users to enter any number of events they want
+            - Controlled component pattern with value and onChange
             - name="eventCount" identifies this field in handleChange
+            - type="number" ensures only numeric input
+            - min="1" prevents negative or zero values
+            - max="50" sets a reasonable upper limit for API performance
           */}
-          <select
+          <input
+            type="number"
             id="eventCount"
             name="eventCount"
             value={searchData.eventCount}
             onChange={handleChange}
-          >
-            <option value={5}>5 events</option>
-            <option value={10}>10 events</option>
-            <option value={15}>15 events</option>
-            <option value={20}>20 events</option>
-          </select>
-        </div>
-        
-        {/* Optional keywords input for filtering events */}
-        <div className="form-group">
-          <label htmlFor="keywords">Keywords (optional):</label>
-          {/* 
-            Optional keywords input
-            - Not required, so users can search without keywords
-            - placeholder provides helpful examples
-            - Same controlled component pattern as location input
-          */}
-          <input
-            type="text"
-            id="keywords"
-            name="keywords"
-            value={searchData.keywords}
-            onChange={handleChange}
-            placeholder="e.g., music, sports, food"
+            min="1"
+            max="50"
+            placeholder="e.g., 12"
           />
         </div>
         

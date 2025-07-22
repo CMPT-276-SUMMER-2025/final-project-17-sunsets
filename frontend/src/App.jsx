@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import Navbar from './Components/Navbar/Navbar'
 import EventSearch from './Components/EventSearch/EventSearch'
 import EventList from './Components/EventList/EventList'
 import './App.css'
@@ -7,6 +8,7 @@ function App() {
   // Store search parameters and control which view to show (search form vs results)
   const [searchParams, setSearchParams] = useState(null);
   const [showSearch, setShowSearch] = useState(true); // Start with search form visible
+  const [currentLocation, setCurrentLocation] = useState(''); // Store current location from header
 
   // Handle search submission - hide search form and show results
   const handleSearch = (params) => {
@@ -20,19 +22,22 @@ function App() {
     setSearchParams(null);
   };
 
+  // Handle location change from header
+  const handleLocationChange = (location) => {
+    setCurrentLocation(location);
+  };
+
   return (
     <div className="app">
-      <header className="app-header">
-        <h1>Event Finder</h1>
-        <p>Discover amazing events happening near you</p>
-      </header>
+      {/* Navbar with title and location input */}
+      <Navbar onLocationChange={handleLocationChange} />
       
       <main className="app-main">
         {/* Single scrollable panel that contains either search form or results */}
         <div className="content-panel">
           {showSearch ? (
             // Show search form when showSearch is true
-            <EventSearch onSearch={handleSearch} />
+            <EventSearch onSearch={handleSearch} currentLocation={currentLocation} />
           ) : (
             // Show results with back button when showSearch is false
             <div className="results-container">

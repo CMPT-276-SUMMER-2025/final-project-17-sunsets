@@ -135,6 +135,14 @@ To modify the API integration:
 2. Update the data transformation in the `transformEventData` function
 3. Modify error handling as needed
 
-## License
+## Dev Logs (25/07/22): 
 
-This project is for educational purposes. The Ticketmaster API is subject to Ticketmaster's terms of service.
+Most of the design elements included in our mid-fidelity prototype have been implemented, and the event search function
+that populates the event cards functions as intended. 
+
+I now have to add the option to limit event search by distance (radius), ticket price, and date.
+
+I'll leave the "Route" button blank for now, as M1.5 only specifies the first API features needing to be developed (I know
+that the event data API wasn't listed as first on the M1 report, but it needed the most attention due to the API access problems
+experienced with Eventbrite, Meetup GraphQL, and AllEvents--the latter two of which required an obscure application process
+in order to access their respecive APIs, which I only found out about after paying for the Meetup Pro service).
