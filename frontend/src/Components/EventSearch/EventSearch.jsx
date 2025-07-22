@@ -7,14 +7,18 @@ import './EventSearch.css';
  * EventSearch Component
  * 
  * This component provides a form for users to search for events.
- * It collects event count, distance radius, and optional keywords, then passes this data
+ * It collects event count, distance radius, date range, price range, and optional keywords, then passes this data
  * to the parent component when the form is submitted.
  * Location is now handled by the header component.
  * 
  * @param {Function} onSearch - Callback function called when form is submitted
  * @param {Object} onSearch.params - Search parameters object
  * @param {number} onSearch.params.eventCount - Number of events to display
- * @param {number} onSearch.params.radius - Search radius in miles
+ * @param {number} onSearch.params.radius - Search radius in kilometers
+ * @param {string} onSearch.params.startDate - Start date for event search (YYYY-MM-DD)
+ * @param {string} onSearch.params.endDate - End date for event search (YYYY-MM-DD)
+ * @param {number} onSearch.params.priceMin - Minimum ticket price in CAD
+ * @param {number} onSearch.params.priceMax - Maximum ticket price in CAD
  * @param {string} onSearch.params.keywords - Optional keywords to filter events
  * @param {string} currentLocation - Current location from header component
  */
@@ -24,7 +28,11 @@ const EventSearch = ({ onSearch, currentLocation }) => {
   // setSearchData: Function to update the form data
   const [searchData, setSearchData] = useState({
     eventCount: 10,      // Number of events to show (default 10)
-    radius: 50,          // Search radius in miles (default 50)
+    radius: 80,          // Search radius in kilometers (default 80 km)
+    startDate: '',       // Start date for event search
+    endDate: '',         // End date for event search
+    priceMin: '',        // Minimum ticket price in CAD
+    priceMax: '',        // Maximum ticket price in CAD
     category: ''         // Optional category filter
   });
 
@@ -79,7 +87,8 @@ const EventSearch = ({ onSearch, currentLocation }) => {
     // 3. Updates only the property that changed ([name]: value)
     setSearchData(prev => ({
       ...prev,
-      [name]: name === 'eventCount' || name === 'radius' ? parseInt(value) : value
+      [name]: name === 'eventCount' || name === 'radius' || name === 'priceMin' || name === 'priceMax' ? 
+        (value === '' ? '' : parseInt(value)) : value
     }));
   };
 
@@ -117,7 +126,7 @@ const EventSearch = ({ onSearch, currentLocation }) => {
         
         {/* Distance radius input */}
         <div className="form-group">
-          <label htmlFor="radius">Search Radius (miles):</label>
+          <label htmlFor="radius">Search Radius (km):</label>
           {/* 
             Distance radius input field
             - Allows users to enter any radius value they want
@@ -125,7 +134,7 @@ const EventSearch = ({ onSearch, currentLocation }) => {
             - name="radius" identifies this field in handleChange
             - type="number" ensures only numeric input
             - min="1" prevents negative or zero values
-            - max="500" sets a reasonable upper limit
+            - max="800" sets a reasonable upper limit for kilometers
           */}
           <input
             type="number"
@@ -134,9 +143,99 @@ const EventSearch = ({ onSearch, currentLocation }) => {
             value={searchData.radius}
             onChange={handleChange}
             min="1"
-            max="500"
-            placeholder="e.g., 25"
+            max="800"
+            placeholder="e.g., 40"
           />
+        </div>
+        
+        {/* Date range inputs */}
+        <div className="form-group">
+          <div className="date-inputs">
+            {/* 
+              Start date input field
+              - Allows users to specify when they want to start looking for events
+              - type="date" provides a date picker interface
+              - min attribute prevents selecting past dates
+            */}
+            <div className="date-input">
+              <label htmlFor="startDate">From:</label>
+              <input
+                type="date"
+                id="startDate"
+                name="startDate"
+                value={searchData.startDate}
+                onChange={handleChange}
+                min={new Date().toISOString().split('T')[0]}
+                placeholder="Start date"
+              />
+            </div>
+            
+            {/* 
+              End date input field
+              - Allows users to specify when they want to stop looking for events
+              - type="date" provides a date picker interface
+              - min attribute ensures end date is not before start date
+            */}
+            <div className="date-input">
+              <label htmlFor="endDate">To:</label>
+              <input
+                type="date"
+                id="endDate"
+                name="endDate"
+                value={searchData.endDate}
+                onChange={handleChange}
+                min={searchData.startDate || new Date().toISOString().split('T')[0]}
+                placeholder="End date"
+              />
+            </div>
+          </div>
+        </div>
+        
+        {/* Price range inputs */}
+        <div className="form-group">
+          <div className="price-inputs">
+            {/* 
+              Minimum price input field
+              - Allows users to specify the minimum ticket price they're willing to pay
+              - type="number" ensures only numeric input
+              - min="0" allows free events
+              - placeholder provides helpful example
+            */}
+            <div className="price-input">
+              <label htmlFor="priceMin">Min Price (CAD):</label>
+              <input
+                type="number"
+                id="priceMin"
+                name="priceMin"
+                value={searchData.priceMin}
+                onChange={handleChange}
+                min="0"
+                max="1000"
+                placeholder="e.g., 25"
+              />
+            </div>
+            
+            {/* 
+              Maximum price input field
+              - Allows users to specify the maximum ticket price they're willing to pay
+              - type="number" ensures only numeric input
+              - min="0" allows free events
+              - placeholder provides helpful example
+            */}
+            <div className="price-input">
+              <label htmlFor="priceMax">Max Price (CAD):</label>
+              <input
+                type="number"
+                id="priceMax"
+                name="priceMax"
+                value={searchData.priceMax}
+                onChange={handleChange}
+                min="0"
+                max="1000"
+                placeholder="e.g., 150"
+              />
+            </div>
+          </div>
         </div>
         
         {/* Number of events input */}

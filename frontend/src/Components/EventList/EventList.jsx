@@ -17,7 +17,11 @@ import './EventList.css';
  * @param {string} searchParams.location - City to search for events
  * @param {string} searchParams.keywords - Optional keywords to filter events
  * @param {number} searchParams.eventCount - Number of events to display
- * @param {number} searchParams.radius - Search radius in miles
+ * @param {number} searchParams.radius - Search radius in kilometers
+ * @param {string} searchParams.startDate - Start date for event search
+ * @param {string} searchParams.endDate - End date for event search
+ * @param {number} searchParams.priceMin - Minimum ticket price in CAD
+ * @param {number} searchParams.priceMax - Maximum ticket price in CAD
  */
 const EventList = ({ searchParams }) => {
   // React useState hook creates state variables that trigger re-renders when changed

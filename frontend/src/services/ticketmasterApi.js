@@ -66,7 +66,11 @@ const transformEventData = (ticketmasterEvent) => {
  * @param {string} searchParams.location - City name to search in
  * @param {string} searchParams.keywords - Optional keywords to filter events
  * @param {number} searchParams.eventCount - Number of events to return
- * @param {number} searchParams.radius - Search radius in miles (default 50)
+ * @param {number} searchParams.radius - Search radius in kilometers (default 80)
+ * @param {string} searchParams.startDate - Start date for event search (YYYY-MM-DD)
+ * @param {string} searchParams.endDate - End date for event search (YYYY-MM-DD)
+ * @param {number} searchParams.priceMin - Minimum ticket price in CAD
+ * @param {number} searchParams.priceMax - Maximum ticket price in CAD
  * @returns {Promise<Array>} Promise that resolves to an array of transformed events
  */
 export const fetchEvents = async (searchParams) => {
@@ -92,9 +96,34 @@ export const fetchEvents = async (searchParams) => {
     }
 
     // Set search radius and units for location-based searches
-    // Use user-provided radius or default to 50 miles
-    params.append('radius', searchParams.radius || 50);
-    params.append('unit', 'miles');   // Use miles as the unit
+    // Use user-provided radius or default to 80 kilometers
+    params.append('radius', searchParams.radius || 80);
+    params.append('unit', 'km');   // Use kilometers as the unit
+
+    // Add date range filtering if provided
+    if (searchParams.startDate) {
+      // Convert YYYY-MM-DD to ISO 8601 format with time (start of day)
+      const startDateTime = `${searchParams.startDate}T00:00:00Z`;
+      params.append('startDateTime', startDateTime);
+    }
+    
+    if (searchParams.endDate) {
+      // Convert YYYY-MM-DD to ISO 8601 format with time (end of day)
+      const endDateTime = `${searchParams.endDate}T23:59:59Z`;
+      params.append('endDateTime', endDateTime);
+    }
+
+    // Add price range filtering if provided
+    if (searchParams.priceMin && searchParams.priceMin !== '') {
+      params.append('priceMin', searchParams.priceMin);
+    }
+    
+    if (searchParams.priceMax && searchParams.priceMax !== '') {
+      params.append('priceMax', searchParams.priceMax);
+    }
+
+    // Set currency to CAD for Canadian users
+    params.append('currency', 'CAD');
 
     // Note: Removed countryCode parameter to allow global search
     // This enables searching for events in Canada, UK, Australia, and other countries

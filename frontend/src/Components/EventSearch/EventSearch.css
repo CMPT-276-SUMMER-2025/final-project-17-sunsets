@@ -79,4 +79,78 @@
   transform: translateY(0);
 }
 
+/* Date range inputs container */
+.date-inputs {
+  display: flex;
+  gap: 1rem;
+}
+
+/* Individual date input container */
+.date-input {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Date input label styling */
+.date-input label {
+  font-weight: 600;
+  color: #555;
+  font-size: 0.9rem;
+}
+
+/* Date input field styling */
+.date-input input[type="date"] {
+  padding: 0.75rem;
+  border: 2px solid #e1e5e9;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.2s ease;
+}
+
+/* Date input focus state */
+.date-input input[type="date"]:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+/* Price range inputs container */
+.price-inputs {
+  display: flex;
+  gap: 1rem;
+}
+
+/* Individual price input container */
+.price-input {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Price input label styling */
+.price-input label {
+  font-weight: 600;
+  color: #555;
+  font-size: 0.9rem;
+}
+
+/* Price input field styling */
+.price-input input[type="number"] {
+  padding: 0.75rem;
+  border: 2px solid #e1e5e9;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.2s ease;
+}
+
+/* Price input focus state */
+.price-input input[type="number"]:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
  
