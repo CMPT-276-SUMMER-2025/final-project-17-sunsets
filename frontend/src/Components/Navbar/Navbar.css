@@ -1,0 +1,93 @@
+.header {
+  background: linear-gradient(90deg, #39373c 60%, #23222a 100%);
+  padding: 0 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 72px;
+  width: 100vw;
+  min-width: 0;
+  border-radius: 0;
+  margin-bottom: 0;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.13);
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  border-bottom: 1.5px solid #23222a;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.logo {
+  height: 44px;
+  width: 44px;
+  object-fit: contain;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.10);
+}
+
+.title {
+  color: #fff;
+  font-size: 2.1rem;
+  margin: 0;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.form {
+  display: flex;
+  align-items: center;
+  background: #2d2c31;
+  border-radius: 6px;
+  padding: 4px 8px;
+}
+
+.input {
+  padding: 8px;
+  border-radius: 4px 0 0 4px;
+  border: none;
+  outline: none;
+  font-size: 1rem;
+  background: #fff;
+  color: #222;
+  min-width: 180px;
+}
+
+.button {
+  padding: 8px 12px;
+  border-radius: 0 4px 4px 0;
+  border: none;
+  background: #222;
+  color: #fff;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.18s cubic-bezier(.4,2,.6,1), box-shadow 0.18s cubic-bezier(.4,2,.6,1);
+  -webkit-transition: background 0.2s, transform 0.18s cubic-bezier(.4,2,.6,1), box-shadow 0.18s cubic-bezier(.4,2,.6,1);
+  will-change: transform, box-shadow;
+}
+
+.button:hover, .button:focus {
+  background: #57545c;
+  transform: scale(1.13);
+  box-shadow: 0 0 12px 2px #88888888;
+}
+
+@media (max-width: 900px) {
+  .header {
+    padding: 0 10px;
+    height: 60px;
+  }
+  .logo {
+    height: 32px;
+    width: 32px;
+  }
+  .title {
+    font-size: 1.2rem;
+  }
+}
