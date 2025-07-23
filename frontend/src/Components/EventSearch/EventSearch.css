@@ -57,10 +57,12 @@
 
 /* Input and select field styling with focus effects */
 .form-group input,
-.form-group select {
+.form-group select,
+.date-input input[type="date"],
+.price-input input[type="number"] {
   padding: 0.75rem;
   border: 2px solid #444;
-  border-radius: 8px;
+  border-radius: 12px; /* Slightly rounded corners */
   font-size: 1rem;
   transition: border-color 0.2s ease;
   background: #232326;
@@ -85,22 +87,21 @@
 
 /* Search button with gradient background and hover effects */
 .search-button {
-  background: linear-gradient(135deg, #007bff, #0056b3);
+  background: linear-gradient(90deg, #b46cff 0%, #e0527d 100%); /* Pink to purple gradient */
   color: white;
   border: none;
+  border-radius: 12px; /* Match input box shape */
   padding: 1rem;
-  border-radius: 8px;
   font-size: 1.1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: background 0.2s, border-radius 0.2s, transform 0.2s, box-shadow 0.2s;
   margin-top: 1rem;
 }
 
-/* Hover effect - button lifts up with shadow */
-.search-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(0, 123, 255, 0.3);
+.search-button:hover, .search-button:focus {
+  background: linear-gradient(90deg, #e0527d 0%, #b46cff 100%); /* Inverted gradient */
+  border-radius: 12px; /* Keep shape consistent on hover */
 }
 
 /* Active state - button returns to original position */
