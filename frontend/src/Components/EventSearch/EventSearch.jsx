@@ -38,8 +38,7 @@ const EventSearch = ({ onSearch, currentLocation, isVisible = false }) => {
     category: ''         // Optional category filter
   });
 
-  // State for error message
-  const [errorMessage, setErrorMessage] = useState('');
+  const [isButtonActive, setIsButtonActive] = useState(false);
 
   /**
    * Handle form submission
@@ -60,9 +59,9 @@ const EventSearch = ({ onSearch, currentLocation, isVisible = false }) => {
       return;
     }
     
-    // Clear any previous error messages
-    setErrorMessage('');
-    
+    setIsButtonActive(true);
+    setTimeout(() => setIsButtonActive(false), 150);
+
     // Combine search data with location from header
     const searchParams = {
       ...searchData,
@@ -280,7 +279,7 @@ const EventSearch = ({ onSearch, currentLocation, isVisible = false }) => {
         </div>
         
         {/* Submit button to trigger search */}
-        <button type="submit" className="search-button">
+        <button type="submit" className={`search-button${isButtonActive ? ' active' : ''}`}>
           Search Events
         </button>
       </form>
