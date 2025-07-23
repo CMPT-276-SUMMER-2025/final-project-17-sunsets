@@ -1,0 +1,102 @@
+/* Navbar container - dark grey with rounded edges */
+.navbar {
+  background: #2c3e50;  /* Dark grey background */
+  color: white;
+  padding: 1rem 2rem;
+  border-radius: 12px;
+  margin: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Application title styling */
+.navbar-title h1 {
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Location input container */
+.navbar-location {
+  flex-shrink: 0;
+}
+
+/* Location form - flexbox layout for input and button */
+.location-form {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+/* Location input field - lighter than navbar background */
+.location-input {
+  background: #ecf0f1;  /* Light grey background */
+  border: 2px solid #bdc3c7;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  color: #2c3e50;
+  width: 250px; /* Increased width for better placeholder visibility */
+  transition: all 0.2s ease;
+}
+
+/* Focus state for location input */
+.location-input:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+  background: white;
+}
+
+/* Placeholder text styling */
+.location-input::placeholder {
+  color: #7f8c8d;
+  font-style: italic;
+}
+
+/* Hover state for location input */
+.location-input:hover {
+  border-color: #95a5a6;
+  background: #f8f9fa;
+}
+
+/* Enter button styling */
+.enter-button {
+  background: #3498db;  /* Blue background */
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+/* Hover state for enter button */
+.enter-button:hover:not(:disabled) {
+  background: #2980b9;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3);
+}
+
+/* Active state for enter button */
+.enter-button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+/* Disabled state for enter button */
+.enter-button:disabled {
+  background: #bdc3c7;
+  color: #7f8c8d;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+
