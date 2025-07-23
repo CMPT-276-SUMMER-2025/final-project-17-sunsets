@@ -48,6 +48,7 @@
   color: #ececec;
   width: 250px;
   transition: border-color 0.2s, background 0.2s, color 0.2s;
+  height: 48px; /* Match button height */
 }
 
 /* Focus state for location input */
@@ -72,7 +73,7 @@
 
 /* Enter button styling */
 .enter-button {
-  background: #3498db;  /* Blue background */
+  background: linear-gradient(90deg, #b46cff 0%, #e0527d 100%); /* Pink to purple gradient */
   color: white;
   border: none;
   border-radius: 999px;
@@ -80,15 +81,19 @@
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
   white-space: nowrap;
+  height: 48px; /* Match input height */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Hover state for enter button */
-.enter-button:hover:not(:disabled) {
-  background: #2980b9;
+.enter-button:hover:not(:disabled), .enter-button:focus:not(:disabled) {
+  background: linear-gradient(90deg, #e0527d 0%, #b46cff 100%); /* Inverted gradient */
   transform: translateY(-1px);
-  box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3);
+  box-shadow: 0 2px 8px rgba(228, 82, 125, 0.3);
 }
 
 /* Active state for enter button */
