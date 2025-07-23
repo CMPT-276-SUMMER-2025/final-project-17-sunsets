@@ -71,27 +71,4 @@
   background: #5a6fd8;
 }
 
-/* Responsive design for mobile devices */
-@media (max-width: 768px) {
-  .app-header h1 {
-    font-size: 2rem;
-  }
-  
-  .app-header p {
-    font-size: 1rem;
-  }
-  
-  .app-main {
-    padding: 0 0.5rem 1rem;
-    flex-direction: column; /* Stack vertically on mobile */
-    justify-content: flex-start; /* Reset alignment for mobile */
-  }
-  
-  /* Full width on mobile for better usability */
-  .content-panel {
-    padding: 1rem;
-    max-height: 60vh;
-    width: 100%;
-    min-width: auto;
-  }
-} 
+ 

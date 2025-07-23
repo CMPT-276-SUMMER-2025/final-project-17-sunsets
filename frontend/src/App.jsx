@@ -5,13 +5,13 @@ import EventList from './Components/EventList/EventList'
 import './App.css'
 
 function App() {
-  // Store search parameters and control which view to show (search form vs results)
+  // Store search parameters and control which view to show (search form vs resulting event cards)
   const [searchParams, setSearchParams] = useState(null);
-  const [showSearch, setShowSearch] = useState(true); // Start with search form visible
+  const [showSearch, setShowSearch] = useState(true); // Start with search form visible. Sorry for the tounge twister variable name.
   const [currentLocation, setCurrentLocation] = useState(''); // Store current location from header
   const [locationSubmitted, setLocationSubmitted] = useState(false); // Track if location has been submitted
 
-  // Handle search submission - hide search form and show results
+  // Handle search submission - hide search form and show results (false = show event cards; I know it may sound a bit backwards)
   const handleSearch = (params) => {
     setSearchParams(params);
     setShowSearch(false);
@@ -40,7 +40,7 @@ function App() {
       <Navbar onLocationChange={handleLocationChange} onLocationSubmit={handleLocationSubmit} />
       
       <main className="app-main">
-        {/* Single scrollable panel that contains either search form or results */}
+        {/* Single scrollable panel that contains either search form or event cards */}
         <div className="content-panel">
           {showSearch ? (
             // Show search form when showSearch is true

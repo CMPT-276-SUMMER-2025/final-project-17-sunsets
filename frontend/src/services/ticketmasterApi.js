@@ -165,4 +165,4 @@ export const fetchEvents = async (searchParams) => {
 };
 
 // Note: Removed deprecated coordinate-based search functionality
-// The app now uses city-based search which is more user-friendly and reliable 
+// App now uses city-based search which is more user-friendly and reliable long term
