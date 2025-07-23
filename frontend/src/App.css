@@ -1,8 +1,76 @@
 /* Main app container with gradient background */
 .app {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #000;
+  position: relative;
+  overflow: hidden;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.app::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 0;
+  pointer-events: none;
+  width: 2px;
+  height: 2px;
+  opacity: 0.6;
+  border-radius: 50%;
+  box-shadow:
+    40vw 10vh 2px 1px rgba(255,255,255,0.45),
+    10vw 20vh 0px 0.5px rgba(255,255,255,0.32),
+    80vw 30vh 1px 1px rgba(255,255,255,0.36),
+    60vw 40vh 0px 1px rgba(255,255,255,0.24),
+    20vw 50vh 1px 1.5px rgba(255,255,255,0.48),
+    70vw 60vh 0px 0.5px rgba(255,255,255,0.32),
+    30vw 70vh 1px 1px rgba(255,255,255,0.36),
+    50vw 80vh 0px 1px rgba(255,255,255,0.24),
+    15vw 15vh 1px 1.5px rgba(255,255,255,0.39),
+    85vw 25vh 0px 0.5px rgba(255,255,255,0.32),
+    25vw 35vh 1px 1px rgba(255,255,255,0.36),
+    75vw 45vh 0px 1px rgba(255,255,255,0.24),
+    35vw 55vh 1px 1.5px rgba(255,255,255,0.48),
+    55vw 65vh 0px 0.5px rgba(255,255,255,0.32),
+    45vw 75vh 1px 1px rgba(255,255,255,0.36),
+    65vw 85vh 0px 1px rgba(255,255,255,0.24),
+    5vw 60vh 1px 1.5px rgba(255,255,255,0.39),
+    95vw 70vh 0px 0.5px rgba(255,255,255,0.32),
+    60vw 20vh 1px 1px rgba(255,255,255,0.36),
+    80vw 80vh 0px 1px rgba(255,255,255,0.24),
+    12vw 12vh 1px 1px rgba(255,255,255,0.32),
+    22vw 18vh 0px 1px rgba(255,255,255,0.24),
+    32vw 28vh 1px 1.5px rgba(255,255,255,0.36),
+    42vw 38vh 0px 0.5px rgba(255,255,255,0.32),
+    52vw 48vh 1px 1px rgba(255,255,255,0.39),
+    62vw 58vh 0px 1px rgba(255,255,255,0.24),
+    72vw 68vh 1px 1.5px rgba(255,255,255,0.36),
+    82vw 78vh 0px 0.5px rgba(255,255,255,0.32),
+    92vw 88vh 1px 1px rgba(255,255,255,0.39),
+    18vw 82vh 0px 1px rgba(255,255,255,0.24),
+    28vw 72vh 1px 1.5px rgba(255,255,255,0.36),
+    38vw 62vh 0px 0.5px rgba(255,255,255,0.32),
+    48vw 52vh 1px 1px rgba(255,255,255,0.39),
+    58vw 42vh 0px 1px rgba(255,255,255,0.24),
+    68vw 32vh 1px 1.5px rgba(255,255,255,0.36),
+    78vw 22vh 0px 0.5px rgba(255,255,255,0.32),
+    88vw 12vh 1px 1px rgba(255,255,255,0.39),
+    8vw 8vh 1px 1px rgba(255,255,255,0.28),
+    18vw 28vh 0px 1px rgba(255,255,255,0.22),
+    28vw 38vh 1px 1.5px rgba(255,255,255,0.29),
+    38vw 48vh 0px 0.5px rgba(255,255,255,0.21),
+    48vw 58vh 1px 1px rgba(255,255,255,0.33),
+    58vw 68vh 0px 1px rgba(255,255,255,0.19),
+    68vw 78vh 1px 1.5px rgba(255,255,255,0.27),
+    78vw 88vh 0px 0.5px rgba(255,255,255,0.23),
+    88vw 98vh 1px 1px rgba(255,255,255,0.31),
+    98vw 18vh 0px 1px rgba(255,255,255,0.18);
+}
+
+/* Ensure content is above the stars */
+.app > * {
+  position: relative;
+  z-index: 1;
 }
 
 /* Header styling with centered text */
