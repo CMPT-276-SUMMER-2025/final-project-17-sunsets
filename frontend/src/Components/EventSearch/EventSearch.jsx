@@ -6,93 +6,81 @@ import './EventSearch.css';
 /**
  * EventSearch Component
  * 
- * This provides a form for users to search for events.
- * It collects user input for event count, distance radius, date range, price range, and optional keywords, 
- * then passes this data to the parent component when the form is submitted. 
- * Location is now handled by the header component, and the search preferences will only become visible after the
- * user has entered a valid location in the header. 
+ * The search form that appears after the user enters their location.
+ * Collects all the search preferences like dates, price range, number of events, etc.
+ * and sends them to the parent component when submitted.
  * 
- * @param {Function} onSearch - Callback function called when search pref form is submitted
- * @param {Object} onSearch.params - Search parameters object
- * @param {number} onSearch.params.eventCount - Number of events to display
- * @param {number} onSearch.params.radius - Search radius in kilometers
- * @param {string} onSearch.params.startDate - Start date for event search (YYYY-MM-DD)
- * @param {string} onSearch.params.endDate - End date for event search (same as start date)
- * @param {number} onSearch.params.priceMin - Minimum ticket price in CAD
- * @param {number} onSearch.params.priceMax - Maximum ticket price (also CAD)
- * @param {string} onSearch.params.keywords - Optional keywords to filter events
- * @param {string} currentLocation - Current location from site header component
- * @param {boolean} isVisible - Whether the search form should be visible (dependent on valid location input)
+ * @param {Function} onSearch - Called when form is submitted with search parameters
+ * @param {string} currentLocation - The location user entered in the navbar
+ * @param {boolean} isVisible - Whether this form should be shown (depends on location being entered)
  */
 const EventSearch = ({ onSearch, currentLocation, isVisible = false }) => {
-  // useState hook to manage the form data
-  // searchData: Object containing all form field values
-  // setSearchData: Function to update the form data
+  // All the form field values - this is what gets sent to the API
   const [searchData, setSearchData] = useState({
-    eventCount: 10,      // Number of events to show (default 10)
-    radius: 80,          // Search radius in kilometers (default 80 km)
-    startDate: '',       // Start date for event search
-    endDate: '',         // End date for event search
-    priceMin: '',        // Minimum ticket price in CAD
-    priceMax: '',        // Maximum ticket price in CAD
-    category: ''         // Optional category filter
+    eventCount: 10,      // How many events to show (default 10)
+    radius: 80,          // Search radius in km (default 80km)
+    startDate: '',       // When to start looking for events
+    endDate: '',         // When to stop looking for events
+    priceMin: '',        // Minimum price user wants to pay
+    priceMax: '',        // Maximum price user wants to pay
+    category: ''         // What type of events (music, sports, etc.)
   });
 
+  // Visual feedback when button is pressed
   const [isButtonActive, setIsButtonActive] = useState(false);
 
+  // Show error messages to user if something goes wrong
+  const [errorMessage, setErrorMessage] = useState('');
+
   /**
-   * Handle form submission
+   * Handle when user submits the search form
    * 
-   * This function is called when the user clicks the "Search Events" button
-   * or presses Enter.
+   * This runs when they click "Search Events" or press Enter.
+   * We validate the input, prepare the data, and send it to the parent.
    * 
-   * @param {Event} e - The form submission event object
+   * @param {Event} e - The form submission event
    */
   const handleSubmit = (e) => {
-    // Prevents the browser's default behavior for form submission, which is to reload the entire page.
+    // Stop the page from refreshing
     e.preventDefault();
     
-    // Check if location is provided
+    // Make sure user entered a location first
     if (!currentLocation.trim()) {
-      // If no location is provided, display an alert and return
-      alert('Please enter a location in the header to search for events.');
+      setErrorMessage('Please enter a location in the header to search for events.');
       return;
     }
     
+    // Give button press feedback
     setIsButtonActive(true);
     setTimeout(() => setIsButtonActive(false), 150);
 
-    // Combine search data with location from header
+    // Clear any old error messages
+    setErrorMessage('');
+
+    // Combine our form data with the location from the navbar
     const searchParams = {
       ...searchData,
       location: currentLocation,
-      keywords: searchData.category  // Map category to keywords for API compatibility
+      keywords: searchData.category  // API expects 'keywords' but we call it 'category'
     };
     
-    // Call the onSearch function passed from the parent component
-    // Passes the combined search parameters as an argument to onSearch
+    // Send everything to the parent component
     onSearch(searchParams);
   };
 
   /**
-   * Handle input field changes
+   * Update form fields as user types
    * 
-   * This function is called whenever the user types in any form field.
-   * It updates the corresponding property in the searchData state.
+   * This runs every time the user changes any input field.
+   * We update the corresponding value in our state.
    * 
-   * @param {Event} e - The input change event object
+   * @param {Event} e - The input change event
    */
   const handleChange = (e) => {
-    // Destructure the name and value from the event target (the input field)
-    // name comes from the input's name attribute (location, eventCount, keywords)
-    // value is the current text in the input field
+    // Get the field name and new value from the input
     const { name, value } = e.target;
     
-    // Update the searchData state with the new value
-    // prev => ({ ...prev, [name]: value }) is a function that:
-    // 1. Takes the previous state (prev)
-    // 2. Spreads all existing properties (...prev)
-    // 3. Updates only the property that changed ([name]: value)
+    // Update the state with the new value
     setSearchData(prev => ({
       ...prev,
       [name]: name === 'eventCount' || name === 'radius' || name === 'priceMin' || name === 'priceMax' ? 
@@ -100,28 +88,25 @@ const EventSearch = ({ onSearch, currentLocation, isVisible = false }) => {
     }));
   };
 
-
-
-  // JSX return statement - renders the search form
+  // Render the search form
   return (
     <div className={`event-search ${isVisible ? 'visible' : 'hidden'}`}>
       <h2>Find Events Near You</h2>
-      {/* 
-        Form element with onSubmit handler
-        When the form is submitted (Enter key or button click), handleSubmit is called
-      */}
+      
+      {/* Show error message if there is one */}
+      {errorMessage && (
+        <div className="error-message">
+          {errorMessage}
+        </div>
+      )}
+      
+      {/* The actual search form */}
       <form onSubmit={handleSubmit} className="search-form">
 
         
-        {/* Category input for filtering events */}
+        {/* What type of events they want */}
         <div className="form-group">
           <label htmlFor="category">Category:</label>
-          {/* 
-            Category input field
-            - Optional field for filtering events by category
-            - placeholder provides helpful examples
-            - Same controlled component pattern as other inputs
-          */}
           <input
             type="text"
             id="category"
@@ -132,18 +117,9 @@ const EventSearch = ({ onSearch, currentLocation, isVisible = false }) => {
           />
         </div>
         
-        {/* Distance radius input */}
+        {/* How far to search from their location */}
         <div className="form-group">
           <label htmlFor="radius">Search Radius (km):</label>
-          {/* 
-            Distance radius input field
-            - Allows users to enter any radius value they want
-            - Controlled component pattern with value and onChange
-            - name="radius" identifies this field in handleChange
-            - type="number" ensures only numeric input
-            - min="1" prevents negative or zero values
-            - max="800" sets a reasonable upper limit for kilometers
-          */}
           <input
             type="number"
             id="radius"
@@ -156,15 +132,10 @@ const EventSearch = ({ onSearch, currentLocation, isVisible = false }) => {
           />
         </div>
         
-        {/* Date range inputs */}
+        {/* When they want to see events */}
         <div className="form-group">
           <div className="date-inputs">
-            {/* 
-              Start date input field
-              - Allows users to specify when they want to start looking for events
-              - type="date" provides a date picker interface
-              - min attribute prevents selecting past dates
-            */}
+            {/* Start date */}
             <div className="date-input">
               <label htmlFor="startDate">From:</label>
               <input
@@ -178,12 +149,7 @@ const EventSearch = ({ onSearch, currentLocation, isVisible = false }) => {
               />
             </div>
             
-            {/* 
-              End date input field
-              - Allows users to specify when they want to stop looking for events
-              - type="date" provides a date picker interface
-              - min attribute ensures end date is not before start date
-            */}
+            {/* End date */}
             <div className="date-input">
               <label htmlFor="endDate">To:</label>
               <input
@@ -199,16 +165,10 @@ const EventSearch = ({ onSearch, currentLocation, isVisible = false }) => {
           </div>
         </div>
         
-        {/* Price range inputs */}
+        {/* How much they want to spend */}
         <div className="form-group">
           <div className="price-inputs">
-            {/* 
-              Minimum price input field
-              - Allows users to specify the minimum ticket price they're willing to pay
-              - type="number" ensures only numeric input
-              - min="0" allows free events
-              - placeholder provides helpful example
-            */}
+            {/* Minimum price */}
             <div className="price-input">
               <label htmlFor="priceMin">Min Price (CAD):</label>
               <input
@@ -223,13 +183,7 @@ const EventSearch = ({ onSearch, currentLocation, isVisible = false }) => {
               />
             </div>
             
-            {/* 
-              Maximum price input field
-              - Allows users to specify the maximum ticket price they're willing to pay
-              - type="number" ensures only numeric input
-              - min="0" allows free events
-              - placeholder provides helpful example
-            */}
+            {/* Maximum price */}
             <div className="price-input">
               <label htmlFor="priceMax">Max Price (CAD):</label>
               <input
@@ -246,18 +200,9 @@ const EventSearch = ({ onSearch, currentLocation, isVisible = false }) => {
           </div>
         </div>
         
-        {/* Number of events input */}
+        {/* How many events to show */}
         <div className="form-group">
           <label htmlFor="eventCount">Number of Events:</label>
-          {/* 
-            Number of events input field
-            - Allows users to enter any number of events they want
-            - Controlled component pattern with value and onChange
-            - name="eventCount" identifies this field in handleChange
-            - type="number" ensures only numeric input
-            - min="1" prevents negative or zero values
-            - max="50" sets a reasonable upper limit for API performance
-          */}
           <input
             type="number"
             id="eventCount"
@@ -270,7 +215,7 @@ const EventSearch = ({ onSearch, currentLocation, isVisible = false }) => {
           />
         </div>
         
-        {/* Submit button to trigger search */}
+        {/* Submit button */}
         <button type="submit" className={`search-button${isButtonActive ? ' active' : ''}`}>
           Search Events
         </button>

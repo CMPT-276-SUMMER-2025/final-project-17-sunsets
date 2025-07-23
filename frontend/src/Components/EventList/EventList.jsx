@@ -10,10 +10,10 @@ import './EventList.css';
 /**
  * EventList Component
  * 
- * This component displays a list of events fetched from the Ticketmaster API.
- * It handles the entire lifecycle of fetching, displaying, and managing events.
+ * This component fetches events from the Ticketmaster API and displays them as cards.
+ * It handles loading states, errors, and shows different messages based on what's happening.
  * 
- * @param {Object} searchParams - Search criteria passed from the parent component
+ * @param {Object} searchParams - All the search criteria from the search form
  * @param {string} searchParams.location - City to search for events
  * @param {string} searchParams.keywords - Optional keywords to filter events
  * @param {number} searchParams.eventCount - Number of events to display
@@ -24,54 +24,46 @@ import './EventList.css';
  * @param {number} searchParams.priceMax - Maximum ticket price in CAD
  */
 const EventList = ({ searchParams }) => {
-  // React useState hook creates state variables that trigger re-renders when changed
-  // Each useState call returns an array: [currentValue, functionToUpdateValue]
+  // State variables to track what's happening
   
-  // events: Array of event objects fetched from the API
-  // setEvents: Function to update the events array
+  // The list of events we got from the API
   const [events, setEvents] = useState([]);
   
-  // loading: Boolean that tracks if we're currently fetching data from the API
-  // setLoading: Function to update the loading state
+  // Whether we're currently loading events from the API
   const [loading, setLoading] = useState(false);
   
-  // error: String containing error message, or null if no error
-  // setError: Function to update the error state
+  // Any error message if something went wrong
   const [error, setError] = useState(null);
 
   /**
-   * Fetch events from Ticketmaster API
+   * Fetch events from the Ticketmaster API
    * 
-   * This function handles the API call to get events based on search parameters.
-   * It manages loading states and error handling for a smooth user experience.
+   * This function makes the actual API call and handles all the different states
+   * (loading, success, error). It's called whenever the search parameters change.
    * 
-   * @param {Object} params - Search parameters (location, keywords, eventCount)
+   * @param {Object} params - The search parameters to send to the API
    */
   const fetchEventsData = async (params) => {
-    // Set loading state to true to show loading spinner
+    // Show loading spinner
     setLoading(true);
     
-    // Clear any previous errors
+    // Clear any old errors
     setError(null);
     
     try {
-      // Call our API service function to fetch events from Ticketmaster
-      // await pauses execution until the API call completes
+      // Call our API service to get events from Ticketmaster
       const eventsData = await fetchEvents(params);
       
-      // Update the events state with the fetched data
-      // This will trigger a re-render of the component with the new events
+      // Update our events list with the new data
       setEvents(eventsData);
     } catch (err) {
-      // If the API call fails, set an error message for the user
-      // Use the error message from the API or a default message
+      // Something went wrong - show error message to user
       setError(err.message || 'Failed to fetch events. Please try again.');
       
-      // Log the error for debugging purposes
+      // Log the error for debugging
       console.error('Error fetching events:', err);
     } finally {
-      // Always set loading to false, whether the API call succeeded or failed
-      // This ensures the loading spinner disappears
+      // Always hide loading spinner, whether it worked or not
       setLoading(false);
     }
   };
@@ -79,24 +71,21 @@ const EventList = ({ searchParams }) => {
   /**
    * useEffect Hook - React's way of handling side effects
    * 
-   * This hook runs whenever the searchParams prop changes.
-   * It automatically fetches new events when the user performs a new search.
+   * This runs whenever the searchParams prop changes (when user does a new search).
+   * It automatically fetches new events from the API.
    * 
-   * The second parameter [searchParams] is the dependency array:
-   * - If searchParams changes, the effect runs again
-   * - If searchParams stays the same, the effect doesn't run
+   * The [searchParams] at the end means "run this effect when searchParams changes"
    */
   useEffect(() => {
-    // Only fetch events if searchParams exists (user has performed a search)
+    // Only fetch if we actually have search parameters
     if (searchParams) {
       fetchEventsData(searchParams);
     }
-  }, [searchParams]); // Dependency array - effect runs when searchParams changes
+  }, [searchParams]);
 
-  // Conditional rendering based on component state
-  // React components can return different JSX based on their state
+  // Show different content based on what's happening
   
-  // Show loading spinner while fetching data from API
+  // Show loading spinner while fetching events
   if (loading) {
     return (
       <div className="event-list">
@@ -114,14 +103,14 @@ const EventList = ({ searchParams }) => {
       <div className="event-list">
         <div className="error">
           <p>{error}</p>
-          {/* onClick handler calls fetchEventsData to retry the API call */}
+          {/* Let user try again */}
           <button onClick={() => fetchEventsData(searchParams)}>Try Again</button>
         </div>
       </div>
     );
   }
 
-  // Show initial message when user hasn't performed a search yet
+  // Show message when user hasn't searched yet
   if (!searchParams) {
     return (
       <div className="event-list">
@@ -132,7 +121,7 @@ const EventList = ({ searchParams }) => {
     );
   }
 
-  // Show message when API returned no events for the search criteria
+  // Show message when no events were found
   if (events.length === 0) {
     return (
       <div className="event-list">
@@ -144,20 +133,19 @@ const EventList = ({ searchParams }) => {
     );
   }
 
-  // Main render - display the list of events
+  // Show the list of events
   return (
     <div className="event-list">
-      {/* Show count of events found */}
+      {/* Show how many events we found */}
       <div className="event-count">
         <h3>Found {events.length} event{events.length !== 1 ? 's' : ''} near {searchParams.location}</h3>
       </div>
       
-      {/* Container for all event cards */}
+      {/* Container for all the event cards */}
       <div className="events-container">
         {/* 
-          .map() creates a new array by transforming each event object into an EventCard component
-          key={event.id} is required by React to efficiently update the list when data changes
-          event={event} passes the event data as a prop to the EventCard component
+          Create an EventCard component for each event we got from the API
+          The key prop helps React efficiently update the list when data changes
         */}
         {events.map(event => (
           <EventCard key={event.id} event={event} />

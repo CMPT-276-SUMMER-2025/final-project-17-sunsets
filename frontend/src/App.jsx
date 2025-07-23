@@ -5,30 +5,30 @@ import EventList from './Components/EventList/EventList'
 import './App.css'
 
 function App() {
-  // Store search parameters and control which view to show (search form vs resulting event cards)
+  // Main app state - controls what the user sees and manages data flow
   const [searchParams, setSearchParams] = useState(null);
-  const [showSearch, setShowSearch] = useState(true); // Start with search form visible. Sorry for the tounge twister variable name.
-  const [currentLocation, setCurrentLocation] = useState(''); // Store current location from header
-  const [locationSubmitted, setLocationSubmitted] = useState(false); // Track if location has been submitted
+  const [showSearch, setShowSearch] = useState(true); // Start with search form visible
+  const [currentLocation, setCurrentLocation] = useState(''); // User's entered location
+  const [locationSubmitted, setLocationSubmitted] = useState(false); // Tracks if user submitted location
 
-  // Handle search submission - hide search form and show results (false = show event cards; I know it may sound a bit backwards)
+  // When user submits search form, switch to results view
   const handleSearch = (params) => {
     setSearchParams(params);
     setShowSearch(false);
   };
 
-  // Handle back button - return to search form and clear results
+  // Back button handler - return to search form and clear previous results
   const handleBackToSearch = () => {
     setShowSearch(true);
     setSearchParams(null);
   };
 
-  // Handle location change from header
+  // Update location as user types (for real-time feedback)
   const handleLocationChange = (location) => {
     setCurrentLocation(location);
   };
 
-  // Handle location submission from header
+  // When user hits Enter in location field, mark as submitted
   const handleLocationSubmit = (location) => {
     setCurrentLocation(location);
     setLocationSubmitted(true);
@@ -36,21 +36,21 @@ function App() {
 
   return (
     <div className="app">
-      {/* Navbar with title and location input */}
+      {/* Top navigation bar with app title and location input */}
       <Navbar onLocationChange={handleLocationChange} onLocationSubmit={handleLocationSubmit} />
       
       <main className="app-main">
-        {/* Single scrollable panel that contains either search form or event cards */}
+        {/* Main content area - either search form or results */}
         <div className="content-panel">
           {showSearch ? (
-            // Show search form when showSearch is true
+            // Show search form when user hasn't submitted yet
             <EventSearch 
               onSearch={handleSearch} 
               currentLocation={currentLocation}
               isVisible={locationSubmitted}
             />
           ) : (
-            // Show results with back button when showSearch is false
+            // Show results with back button after search
             <div className="results-container">
               <button className="back-button" onClick={handleBackToSearch}>
                 ← Back to Search
