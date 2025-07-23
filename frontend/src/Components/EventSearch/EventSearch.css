@@ -109,6 +109,12 @@
   transform: translateY(0);
 }
 
+.search-button.active {
+  filter: brightness(0.85);
+  transform: translateY(2px) scale(0.98);
+  box-shadow: 0 1px 4px rgba(180, 108, 255, 0.18);
+}
+
 /* Date range inputs container */
 .date-inputs {
   display: flex;
