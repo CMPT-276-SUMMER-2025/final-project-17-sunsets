@@ -1,0 +1,74 @@
+/* Main app container with gradient background */
+.app {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Header styling with centered text */
+.app-header {
+  text-align: center;
+  padding: 2rem 1rem;
+  color: white;
+}
+
+.app-header h1 {
+  margin: 0 0 0.5rem 0;
+  font-size: 2.5rem;
+  font-weight: 700;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.app-header p {
+  margin: 0;
+  font-size: 1.1rem;
+  opacity: 0.9;
+}
+
+/* Main content area - now uses flexbox for right panel layout */
+.app-main {
+  display: flex;
+  max-width: 100%;
+  margin: 0;
+  padding: 0 1rem 2rem;
+  gap: 1rem;
+  justify-content: flex-end; /* Align panel to the right side */
+}
+
+/* Single scrollable panel that contains search form or results - now 1/3 width on right */
+.content-panel {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  max-height: 70vh; /* Limit height to enable scrolling */
+  overflow-y: auto; /* Enable vertical scrolling when content exceeds height */
+  margin-top: 1rem;
+  width: 33.333%; /* Take up 1/3 of the page width */
+  min-width: 350px; /* Minimum width to ensure usability */
+  flex-shrink: 0; /* Prevent panel from shrinking */
+}
+
+/* Container for search results */
+.results-container {
+  width: 100%;
+}
+
+/* Back button styling to return to search form */
+.back-button {
+  background: #667eea;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-bottom: 1.5rem;
+  transition: background-color 0.2s ease;
+}
+
+.back-button:hover {
+  background: #5a6fd8;
+}
+
+ 
