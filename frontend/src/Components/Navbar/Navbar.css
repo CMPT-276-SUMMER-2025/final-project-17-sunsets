@@ -40,14 +40,14 @@
 
 /* Location input field - lighter than navbar background */
 .location-input {
-  background: #ecf0f1;  /* Light grey background */
-  border: 2px solid #bdc3c7;
+  background: #18181a;  /* Match dark input background */
+  border: 3px solid #b46cff; /* Purple border */
   border-radius: 999px;
   padding: 0.75rem 1rem;
   font-size: 1rem;
-  color: #2c3e50;
-  width: 250px; /* Increased width for better placeholder visibility */
-  transition: all 0.2s ease;
+  color: #ececec;
+  width: 250px;
+  transition: border-color 0.2s, background 0.2s, color 0.2s;
 }
 
 /* Focus state for location input */
@@ -103,6 +103,12 @@
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
+}
+
+.location-input:hover, .location-input:focus {
+  border-color: #e0527d; /* Pink border on hover/focus */
+  background: #18181a; /* Keep background unchanged */
+  color: #ececec; /* Keep text color unchanged */
 }
 
 
