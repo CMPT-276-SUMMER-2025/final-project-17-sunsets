@@ -116,4 +116,10 @@
   color: #ececec; /* Keep text color unchanged */
 }
 
+.enter-button.active {
+  filter: brightness(0.85);
+  transform: translateY(2px) scale(0.98);
+  box-shadow: 0 1px 4px rgba(228, 82, 125, 0.18);
+}
+
 
