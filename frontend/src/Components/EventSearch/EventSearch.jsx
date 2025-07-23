@@ -40,6 +40,9 @@ const EventSearch = ({ onSearch, currentLocation, isVisible = false }) => {
 
   const [isButtonActive, setIsButtonActive] = useState(false);
 
+  // State for error message
+  const [errorMessage, setErrorMessage] = useState('');
+
   /**
    * Handle form submission
    * 
@@ -61,6 +64,9 @@ const EventSearch = ({ onSearch, currentLocation, isVisible = false }) => {
     
     setIsButtonActive(true);
     setTimeout(() => setIsButtonActive(false), 150);
+
+    // Clear any previous error messages
+    setErrorMessage('');
 
     // Combine search data with location from header
     const searchParams = {
