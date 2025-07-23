@@ -4,6 +4,10 @@
   margin: 0 auto;
   padding: 0;
   transition: opacity 0.5s ease, transform 0.5s ease;
+  background: #18181a; /* Very dark grey background */
+  color: #fff; /* White text */
+  border-radius: 18px;
+  box-shadow: 0 4px 32px rgba(0,0,0,0.18);
 }
 
 /* Hidden state - transparent and slightly moved up */
@@ -25,7 +29,7 @@
 /* Search form title styling */
 .event-search h2 {
   text-align: center;
-  color: #333;
+  color: #fff;
   margin-bottom: 1.5rem;
   font-size: 1.8rem;
 }
@@ -47,7 +51,7 @@
 /* Form label styling */
 .form-group label {
   font-weight: 600;
-  color: #555;
+  color: #eee;
   font-size: 0.9rem;
 }
 
@@ -55,12 +59,20 @@
 .form-group input,
 .form-group select {
   padding: 0.75rem;
-  border: 2px solid #e1e5e9;
+  border: 2px solid #444;
   border-radius: 8px;
   font-size: 1rem;
   transition: border-color 0.2s ease;
+  background: #232326;
+  color: #fff;
 }
 
+.form-group input::placeholder,
+.date-input input[type="date"]::placeholder,
+.price-input input[type="number"]::placeholder {
+  color: #bbb;
+  opacity: 1;
+}
 
 
 /* Focus state with blue border and subtle shadow */
@@ -113,17 +125,19 @@
 /* Date input label styling */
 .date-input label {
   font-weight: 600;
-  color: #555;
+  color: #eee;
   font-size: 0.9rem;
 }
 
 /* Date input field styling */
 .date-input input[type="date"] {
   padding: 0.75rem;
-  border: 2px solid #e1e5e9;
+  border: 2px solid #444;
   border-radius: 8px;
   font-size: 1rem;
   transition: border-color 0.2s ease;
+  background: #232326;
+  color: #fff;
 }
 
 /* Date input focus state */
@@ -150,17 +164,19 @@
 /* Price input label styling */
 .price-input label {
   font-weight: 600;
-  color: #555;
+  color: #eee;
   font-size: 0.9rem;
 }
 
 /* Price input field styling */
 .price-input input[type="number"] {
   padding: 0.75rem;
-  border: 2px solid #e1e5e9;
+  border: 2px solid #444;
   border-radius: 8px;
   font-size: 1rem;
   transition: border-color 0.2s ease;
+  background: #232326;
+  color: #fff;
 }
 
 /* Price input focus state */
