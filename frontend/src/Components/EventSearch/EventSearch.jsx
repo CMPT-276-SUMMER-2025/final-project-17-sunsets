@@ -38,6 +38,9 @@ const EventSearch = ({ onSearch, currentLocation, isVisible = false }) => {
     category: ''         // Optional category filter
   });
 
+  // State for error message
+  const [errorMessage, setErrorMessage] = useState('');
+
   /**
    * Handle form submission
    * 
@@ -52,10 +55,13 @@ const EventSearch = ({ onSearch, currentLocation, isVisible = false }) => {
     
     // Check if location is provided
     if (!currentLocation.trim()) {
-      // If no location is provided, display an alert and return
-      alert('Please enter a location in the header to search for events.');
+      // If no location is provided, set error message and return
+      setErrorMessage('Please enter a location in the header to search for events.');
       return;
     }
+    
+    // Clear any previous error messages
+    setErrorMessage('');
     
     // Combine search data with location from header
     const searchParams = {
@@ -101,6 +107,14 @@ const EventSearch = ({ onSearch, currentLocation, isVisible = false }) => {
   return (
     <div className={`event-search ${isVisible ? 'visible' : 'hidden'}`}>
       <h2>Find Events Near You</h2>
+      
+      {/* Error message display */}
+      {errorMessage && (
+        <div className="error-message">
+          {errorMessage}
+        </div>
+      )}
+      
       {/* 
         Form element with onSubmit handler
         When the form is submitted (Enter key or button click), handleSubmit is called
