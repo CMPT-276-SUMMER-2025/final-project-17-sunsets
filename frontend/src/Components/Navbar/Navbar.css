@@ -1,6 +1,6 @@
 /* Navbar container - dark grey with rounded edges */
 .navbar {
-  background: #2c3e50;  /* Dark grey background */
+  background: #222; /* Changed to dark grey */
   color: white;
   padding: 1rem 2rem;
   /* Remove border-radius and margin for full-width sticky effect */
