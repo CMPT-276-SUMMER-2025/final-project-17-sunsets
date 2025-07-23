@@ -1,0 +1,140 @@
+/* Event list container - centered with no padding (handled by parent panel) */
+.event-list {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0;
+}
+
+/* Results count display styling */
+.event-count {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+/* Results count header with gradient background */
+.event-count h3 {
+  color: #333;
+  font-size: 1.5rem;
+  margin: 0;
+  padding: 1rem;
+  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+  border-radius: 8px;
+  border: 1px solid #dee2e6;
+}
+
+/* Container for individual event cards */
+.events-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Loading state styling with centered content */
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+}
+
+/* Animated spinner for loading state */
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #007bff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+/* Spinner rotation animation */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Loading text styling */
+.loading p {
+  color: #666;
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+/* Error state styling with red border */
+.error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  border: 1px solid #dc3545;
+  border-radius: 8px;
+}
+
+/* Error message styling */
+.error p {
+  color: #dc3545;
+  font-size: 1.1rem;
+  margin: 0 0 1rem 0;
+  text-align: center;
+}
+
+/* Error retry button styling */
+.error button {
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.error button:hover {
+  background: #c82333;
+}
+
+/* Initial state styling with dashed border */
+.no-search {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  border: 2px dashed #dee2e6;
+  border-radius: 8px;
+}
+
+/* Initial state message styling */
+.no-search p {
+  color: #666;
+  font-size: 1.2rem;
+  margin: 0;
+  text-align: center;
+}
+
+/* No results found state styling */
+.no-events {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  border-radius: 8px;
+}
+
+/* No results message styling */
+.no-events p {
+  color: #666;
+  font-size: 1.1rem;
+  margin: 0 0 0.5rem 0;
+  text-align: center;
+}
+
+/* Secondary no results message (smaller and lighter) */
+.no-events p:last-child {
+  font-size: 1rem;
+  color: #888;
+} 

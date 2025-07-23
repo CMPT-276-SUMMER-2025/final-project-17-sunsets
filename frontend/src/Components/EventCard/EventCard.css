@@ -1,0 +1,176 @@
+.event-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1rem;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  border: 1px solid #e1e5e9;
+}
+
+.event-card:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+.event-card.expanded {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.event-header {
+  padding: 1.5rem;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+  transition: background-color 0.2s ease;
+}
+
+.event-header:hover {
+  background: linear-gradient(135deg, #e9ecef, #dee2e6);
+}
+
+.event-title {
+  flex: 1;
+}
+
+.event-title h3 {
+  margin: 0 0 0.5rem 0;
+  color: #333;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.event-date {
+  color: #666;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.event-location {
+  margin: 0 1rem;
+  color: #555;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.expand-icon {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #007bff;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease;
+}
+
+.event-card.expanded .expand-icon {
+  transform: rotate(180deg);
+}
+
+.event-details {
+  padding: 1.5rem;
+  background: white;
+  border-top: 1px solid #e1e5e9;
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    max-height: 0;
+  }
+  to {
+    opacity: 1;
+    max-height: 500px;
+  }
+}
+
+.event-description {
+  margin-bottom: 1.5rem;
+}
+
+.event-description p {
+  color: #555;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.event-meta {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.meta-item {
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.meta-item strong {
+  color: #333;
+}
+
+.event-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+.route-button {
+  background: linear-gradient(135deg, #28a745, #20c997);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.route-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+}
+
+.route-button:active {
+  transform: translateY(0);
+}
+
+.ticket-button {
+  background: linear-gradient(135deg, #007bff, #0056b3);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+}
+
+.ticket-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+  color: white;
+  text-decoration: none;
+}
+
+.ticket-button:active {
+  transform: translateY(0);
+} 
