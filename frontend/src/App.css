@@ -125,19 +125,22 @@
 
 /* Back button styling to return to search form */
 .back-button {
-  background: #667eea;
+  background: linear-gradient(90deg, #b46cff 0%, #e0527d 100%);
   color: white;
   border: none;
   padding: 0.75rem 1.5rem;
-  border-radius: 8px;
+  border-radius: 12px;
   font-size: 1rem;
   cursor: pointer;
   margin-bottom: 1.5rem;
-  transition: background-color 0.2s ease;
+  transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+  font-weight: 600;
 }
 
-.back-button:hover {
-  background: #5a6fd8;
+.back-button:hover, .back-button:focus {
+  background: linear-gradient(90deg, #e0527d 0%, #b46cff 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(180, 108, 255, 0.18);
 }
 
  
