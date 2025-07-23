@@ -4,49 +4,54 @@ import './Navbar.css';
 /**
  * Navbar Component
  * 
- * This component displays the application title and provides a location input
- * with an Enter button for users to search for events in their area.
+ * The top navigation bar that shows the app title and lets users enter their location.
+ * Once they submit a location, the search form becomes available.
  * 
- * @param {Function} onLocationChange - Callback function called when location changes
- * @param {string} onLocationChange.location - New location value
- * @param {Function} onLocationSubmit - Callback function called when Enter button is clicked
+ * @param {Function} onLocationChange - Called whenever user types in location field
+ * @param {Function} onLocationSubmit - Called when user hits Enter or clicks button
  */
 const Navbar = ({ onLocationChange, onLocationSubmit }) => {
-  // State to manage the location input value
+  // Track what user types in the location field
   const [location, setLocation] = useState('');
+  // Visual feedback when button is pressed
+  const [isButtonActive, setIsButtonActive] = useState(false);
 
   /**
-   * Handle location input changes
+   * Update location state as user types
    * 
-   * This function is called whenever the user types in the location field.
-   * It updates the local state and notifies the parent component.
+   * This runs every time the user types in the location input field.
+   * We update our local state and also tell the parent component about the change.
    * 
-   * @param {Event} e - The input change event object
+   * @param {Event} e - The input change event
    */
   const handleLocationChange = (e) => {
     const newLocation = e.target.value;
     setLocation(newLocation);
     
-    // Notify parent component of location change
+    // Let parent component know about the change
     if (onLocationChange) {
       onLocationChange(newLocation);
     }
   };
 
   /**
-   * Handle form submission (Enter key press or button click)
+   * Handle when user submits location (Enter key or button click)
    * 
-   * This function is called when the user presses Enter or clicks the Enter button.
-   * It notifies the parent component that the location has been submitted.
+   * This triggers the search form to become visible and tells the parent
+   * that we have a valid location to work with.
    * 
-   * @param {Event} e - The form submission event object
+   * @param {Event} e - The form submission event
    */
   const handleSubmit = (e) => {
     e.preventDefault();
     
-    // Only submit if location is not empty
+    // Only proceed if user actually entered something
     if (location.trim()) {
-      // Notify parent component that location has been submitted
+      // Give visual feedback that button was pressed
+      setIsButtonActive(true);
+      setTimeout(() => setIsButtonActive(false), 150);
+      
+      // Tell parent component we have a location
       if (onLocationSubmit) {
         onLocationSubmit(location.trim());
       }
@@ -55,12 +60,12 @@ const Navbar = ({ onLocationChange, onLocationSubmit }) => {
 
   return (
     <nav className="navbar">
-      {/* Application title on the left */}
+      {/* App title on the left side */}
       <div className="navbar-title">
         <h1>MetropoLive</h1>
       </div>
       
-      {/* Location input and Enter button on the right */}
+      {/* Location input and submit button on the right */}
       <div className="navbar-location">
         <form onSubmit={handleSubmit} className="location-form">
           <input
@@ -72,7 +77,7 @@ const Navbar = ({ onLocationChange, onLocationSubmit }) => {
           />
           <button 
             type="submit" 
-            className="enter-button"
+            className={`enter-button${isButtonActive ? ' active' : ''}`}
             disabled={!location.trim()}
           >
             Enter
