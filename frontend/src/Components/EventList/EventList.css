@@ -13,13 +13,15 @@
 
 /* Results count header with gradient background */
 .event-count h3 {
-  color: #333;
+  color: #fff;
   font-size: 1.5rem;
   margin: 0;
   padding: 1rem;
-  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-  border-radius: 8px;
-  border: 1px solid #dee2e6;
+  background: linear-gradient(90deg, #232326 0%, #18181a 100%);
+  border-radius: 12px;
+  border: 2px solid #b46cff;
+  box-shadow: 0 2px 16px 0 rgba(180, 108, 255, 0.08);
+  letter-spacing: 0.5px;
 }
 
 /* Container for individual event cards */

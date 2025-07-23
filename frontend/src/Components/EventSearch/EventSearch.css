@@ -4,6 +4,10 @@
   margin: 0 auto;
   padding: 0;
   transition: opacity 0.5s ease, transform 0.5s ease;
+  background: #18181a; /* Very dark grey background */
+  color: #fff; /* White text */
+  border-radius: 18px;
+  box-shadow: 0 4px 32px rgba(0,0,0,0.18);
 }
 
 /* Hidden state - transparent and slightly moved up */
@@ -25,7 +29,7 @@
 /* Search form title styling */
 .event-search h2 {
   text-align: center;
-  color: #333;
+  color: #fff;
   margin-bottom: 1.5rem;
   font-size: 1.8rem;
 }
@@ -47,20 +51,30 @@
 /* Form label styling */
 .form-group label {
   font-weight: 600;
-  color: #555;
+  color: #eee;
   font-size: 0.9rem;
 }
 
 /* Input and select field styling with focus effects */
 .form-group input,
-.form-group select {
+.form-group select,
+.date-input input[type="date"],
+.price-input input[type="number"] {
   padding: 0.75rem;
-  border: 2px solid #e1e5e9;
-  border-radius: 8px;
+  border: 2px solid #444;
+  border-radius: 12px; /* Slightly rounded corners */
   font-size: 1rem;
   transition: border-color 0.2s ease;
+  background: #232326;
+  color: #fff;
 }
 
+.form-group input::placeholder,
+.date-input input[type="date"]::placeholder,
+.price-input input[type="number"]::placeholder {
+  color: #bbb;
+  opacity: 1;
+}
 
 
 /* Focus state with blue border and subtle shadow */
@@ -73,27 +87,32 @@
 
 /* Search button with gradient background and hover effects */
 .search-button {
-  background: linear-gradient(135deg, #007bff, #0056b3);
+  background: linear-gradient(90deg, #b46cff 0%, #e0527d 100%); /* Pink to purple gradient */
   color: white;
   border: none;
+  border-radius: 12px; /* Match input box shape */
   padding: 1rem;
-  border-radius: 8px;
   font-size: 1.1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: background 0.2s, border-radius 0.2s, transform 0.2s, box-shadow 0.2s;
   margin-top: 1rem;
 }
 
-/* Hover effect - button lifts up with shadow */
-.search-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(0, 123, 255, 0.3);
+.search-button:hover, .search-button:focus {
+  background: linear-gradient(90deg, #e0527d 0%, #b46cff 100%); /* Inverted gradient */
+  border-radius: 12px; /* Keep shape consistent on hover */
 }
 
 /* Active state - button returns to original position */
 .search-button:active {
   transform: translateY(0);
+}
+
+.search-button.active {
+  filter: brightness(0.85);
+  transform: translateY(2px) scale(0.98);
+  box-shadow: 0 1px 4px rgba(180, 108, 255, 0.18);
 }
 
 /* Date range inputs container */
@@ -113,17 +132,19 @@
 /* Date input label styling */
 .date-input label {
   font-weight: 600;
-  color: #555;
+  color: #eee;
   font-size: 0.9rem;
 }
 
 /* Date input field styling */
 .date-input input[type="date"] {
   padding: 0.75rem;
-  border: 2px solid #e1e5e9;
+  border: 2px solid #444;
   border-radius: 8px;
   font-size: 1rem;
   transition: border-color 0.2s ease;
+  background: #232326;
+  color: #fff;
 }
 
 /* Date input focus state */
@@ -150,17 +171,19 @@
 /* Price input label styling */
 .price-input label {
   font-weight: 600;
-  color: #555;
+  color: #eee;
   font-size: 0.9rem;
 }
 
 /* Price input field styling */
 .price-input input[type="number"] {
   padding: 0.75rem;
-  border: 2px solid #e1e5e9;
+  border: 2px solid #444;
   border-radius: 8px;
   font-size: 1rem;
   transition: border-color 0.2s ease;
+  background: #232326;
+  color: #fff;
 }
 
 /* Price input focus state */

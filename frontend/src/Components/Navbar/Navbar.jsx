@@ -14,6 +14,8 @@ import './Navbar.css';
 const Navbar = ({ onLocationChange, onLocationSubmit }) => {
   // State to manage the location input value
   const [location, setLocation] = useState('');
+  // State for button active visual feedback
+  const [isButtonActive, setIsButtonActive] = useState(false);
 
   /**
    * Handle location input changes
@@ -46,6 +48,9 @@ const Navbar = ({ onLocationChange, onLocationSubmit }) => {
     
     // Only submit if location is not empty
     if (location.trim()) {
+      // Visual feedback for button press
+      setIsButtonActive(true);
+      setTimeout(() => setIsButtonActive(false), 150);
       // Notify parent component that location has been submitted
       if (onLocationSubmit) {
         onLocationSubmit(location.trim());
@@ -72,7 +77,7 @@ const Navbar = ({ onLocationChange, onLocationSubmit }) => {
           />
           <button 
             type="submit" 
-            className="enter-button"
+            className={`enter-button${isButtonActive ? ' active' : ''}`}
             disabled={!location.trim()}
           >
             Enter
