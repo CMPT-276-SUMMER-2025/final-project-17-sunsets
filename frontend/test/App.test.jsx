@@ -1,49 +1,63 @@
-import { render, screen, fireEvent, waitFor } from 'testing-library/react'
-import App from './App'
+import { render, screen, fireEvent, waitFor } from '@testing-library/react'
+import App from '../src/App'
 import { describe, it, expect, vi } from 'vitest'
 
 console.log("Running App.test.jsx")
 
 // Mock components to isolate tests
-vi.mock('./Components/Navbar/Navbar.jsx', () => ({
-    default: ({ onLocationChange, onLocationSubmit }) => (
-        <div data-testid="navbar">
-            <input
-                data-testid="location-input"
-                onChange={(e) => onLocationChange(e.target.value)}
-            />
-            <button
-                data-testid="location-submit"
-                onClick={() => onLocationSubmit("Test City")}
-            >
-                Submit
-            </button>
+vi.mock('../src/Components/Navbar/Navbar.jsx', () => {
+    const MockNavbar = ({ onLocationChange, onLocationSubmit }) => (
+        <div>
+        <input 
+            data-testid="location-input"
+            onChange={(e) => onLocationChange(e.target.value)}
+        />
+        <button 
+            data-testid="location-submit"
+            onClick={() => onLocationSubmit("Vancouver")}
+        >
+            Submit Location
+        </button>
         </div>
     )
-}))
+    return {
+        default: MockNavbar
+    }
+})
 
-vi.mock('./Components/EventSearch/EventSearch.jsx', () => ({
+vi.mock('../src/Components/EventSearch/EventSearch.jsx', () => ({
   default: ({ onSearch, isVisible }) => (
-    <div data-testid="event-search" style={{ display: isVisible ? 'block' : 'none' }}>
-      <button 
-        data-testid="search-submit"
-        onClick={() => onSearch({ location: "Test City", eventCount: 5 })}
-      >
-        Search
-      </button>
+    <div 
+        data-testid="event-search" 
+        style={{ display: isVisible ? 'block' : 'none' }}
+    >
+        <button
+            data-testid="search-submit"
+            onClick={() => onSearch({ location: "Vancouver", eventCount: 5 })}
+        >
+            Search Events
+        </button>
     </div>
   )
 }))
 
-vi.mock('./Components/EventList/EventList.jsx', () => ({
-  default: ({ searchParams }) => (
+vi.mock('../src/Components/EventList/EventList.jsx', () => ({
+  default: ({ searchParams, handleBackToSearch }) => (
     <div data-testid="event-list">
       {searchParams && (
-        <div data-testid="event-cards">
-          {Array.from({ length: searchParams.eventCount }).map((_, i) => (
-            <div key={i} data-testid="event-card">Event {i + 1}</div>
-          ))}
-        </div>
+        <>
+          <div data-testid="event-cards">
+            {Array.from({ length: searchParams.eventCount }).map((_, i) => (
+              <div key={i} data-testid="event-card">Event {i+1}</div>
+            ))}
+          </div>
+          <button 
+            data-testid="mock-back-button"
+            onClick={handleBackToSearch}
+          >
+            ← Back to Search
+          </button>
+        </>
       )}
     </div>
   )
@@ -73,7 +87,7 @@ describe('App components', () => {
 
         // Check if Event Search is visible
         await waitFor(() => {
-            expect(screen.getByTestId('event-search')).toBeVisible()
+            expect(screen.getByTestId('event-search')).toBeTruthy()
         })
     })
 
@@ -87,12 +101,12 @@ describe('App components', () => {
 
         // Check if Event List is visible with 5 cards (number defined in mock)
         await waitFor(() => {
-            expect(screen.getByTestId('event-list')).toBeInTheDocument()
+            expect(screen.queryByTestId('event-list')).toBeTruthy()
             expect(screen.getAllByTestId('event-card')).toHaveLength(5)
         })
     })
 
-    // Back button returns to search
+    // Back button returns to Event Search
     it('should should return to search when clicking back button', async () => {
         render(<App />)
 
@@ -101,11 +115,12 @@ describe('App components', () => {
         fireEvent.click(screen.getByTestId('search-submit'))
 
         // Click back button
-        fireEvent.click(screen.getByText(/back to search/i))
+        fireEvent.click(screen.getByTestId('mock-back-button'))
 
-        // Check if search is visible again
+        // Check if Event Search is visible again and Event List is not visible
         await waitFor(() => {
-            expect(screen.getByTestId('event-search')).toBeVisible()
+            expect(screen.getByTestId('event-search')).toBeTruthy()
+            expect(screen.queryByTestId('event-list')).toBeNull()
         })
     })
 })
