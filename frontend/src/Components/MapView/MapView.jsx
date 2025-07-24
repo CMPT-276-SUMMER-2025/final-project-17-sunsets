@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
-import './Map.css';
+import './MapView.css';
 
 /**
- * Map Component
+ * MapView Component
  * 
  * Displays an interactive Google Maps panel that takes up the left 2/3 of the page.
  * The map will be styled to match the existing design aesthetic.
@@ -10,7 +10,7 @@ import './Map.css';
  * @param {Object} props - Component props
  * @param {string} props.location - Current location to center the map on
  */
-const Map = ({ location }) => {
+const MapView = ({ location }) => {
   const mapRef = useRef(null);
   const mapInstanceRef = useRef(null);
   const [isMapLoaded, setIsMapLoaded] = useState(false);
@@ -183,4 +183,4 @@ const Map = ({ location }) => {
   );
 };
 
-export default Map; 
+export default MapView; 

@@ -69,7 +69,7 @@
     min-width: auto;
     margin-bottom: 1rem;
   }
-  
+
   .map-container {
     height: 50vh;
   }
@@ -79,11 +79,11 @@
   .map-panel {
     padding: 1rem;
   }
-  
+
   .map-header h2 {
     font-size: 1.5rem;
   }
-  
+
   .map-container {
     height: 40vh;
   }

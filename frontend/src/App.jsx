@@ -2,7 +2,7 @@ import { useState } from 'react'
 import Navbar from './Components/Navbar/Navbar'
 import EventSearch from './Components/EventSearch/EventSearch'
 import EventList from './Components/EventList/EventList'
-import Map from './Components/Map/Map'
+import MapView from './Components/MapView/MapView'
 import './App.css'
 
 function App() {
@@ -42,7 +42,7 @@ function App() {
       
       <main className="app-main">
         {/* Map panel on the left - takes up 2/3 of the page */}
-        <Map location={currentLocation} />
+        <MapView location={currentLocation} />
         
         {/* Content panel on the right - takes up 1/3 of the page */}
         <div className="content-panel">
