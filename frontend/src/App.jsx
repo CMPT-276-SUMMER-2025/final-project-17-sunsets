@@ -2,6 +2,7 @@ import { useState } from 'react'
 import Navbar from './Components/Navbar/Navbar'
 import EventSearch from './Components/EventSearch/EventSearch'
 import EventList from './Components/EventList/EventList'
+import Map from './Components/Map/Map'
 import './App.css'
 
 function App() {
@@ -40,7 +41,10 @@ function App() {
       <Navbar onLocationChange={handleLocationChange} onLocationSubmit={handleLocationSubmit} />
       
       <main className="app-main">
-        {/* Main content area - either search form or results */}
+        {/* Map panel on the left - takes up 2/3 of the page */}
+        <Map location={currentLocation} />
+        
+        {/* Content panel on the right - takes up 1/3 of the page */}
         <div className="content-panel">
           {showSearch ? (
             // Show search form when user hasn't submitted yet
