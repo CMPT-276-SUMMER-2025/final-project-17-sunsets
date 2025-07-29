@@ -50,7 +50,16 @@ const transformEventData = (ticketmasterEvent) => {
     url: ticketmasterEvent.url,
     
     // Event image URL if available
-    image: ticketmasterEvent.images?.[0]?.url
+    image: ticketmasterEvent.images?.[0]?.url,
+    
+    // Venue coordinates for map markers (if available)
+    venueCoordinates: venue?.location ? {
+      lat: parseFloat(venue.location.latitude),
+      lng: parseFloat(venue.location.longitude)
+    } : null,
+    
+    // Venue name for marker tooltips
+    venueName: venue?.name || 'Unknown Venue'
   };
 };
 
