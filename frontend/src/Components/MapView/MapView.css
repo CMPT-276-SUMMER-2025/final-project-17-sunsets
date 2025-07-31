@@ -1,0 +1,90 @@
+/* Map panel container - takes up left 2/3 of the page */
+.map-panel {
+  background: #18181a; /* Match dark form background */
+  color: #fff;
+  border-radius: 18px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.32);
+  padding: 2rem;
+  margin-top: 1rem;
+  width: 66.667%; /* Take up 2/3 of the page width */
+  min-width: 600px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Map header styling */
+.map-header {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.map-header h2 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.map-header p {
+  margin: 0;
+  font-size: 1rem;
+  color: #ccc;
+  opacity: 0.9;
+}
+
+/* Map container - where Google Maps renders */
+.map-container {
+  width: 100%;
+  height: 60vh; /* Fixed height for the map */
+  border-radius: 12px;
+  overflow: hidden;
+  background: #242424; /* Dark background while map loads */
+  position: relative;
+}
+
+/* Loading state for map */
+.map-container::before {
+  content: 'Loading map...';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #ccc;
+  font-size: 1rem;
+  z-index: 1;
+}
+
+/* Hide loading text when map is loaded */
+.map-container.loaded::before {
+  display: none;
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 1200px) {
+  .map-panel {
+    width: 100%;
+    min-width: auto;
+    margin-bottom: 1rem;
+  }
+
+  .map-container {
+    height: 50vh;
+  }
+}
+
+@media (max-width: 768px) {
+  .map-panel {
+    padding: 1rem;
+  }
+
+  .map-header h2 {
+    font-size: 1.5rem;
+  }
+
+  .map-container {
+    height: 40vh;
+  }
+} 

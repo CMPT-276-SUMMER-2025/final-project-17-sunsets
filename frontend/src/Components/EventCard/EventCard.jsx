@@ -1,20 +1,20 @@
-// React hook for managing component state
+// React hook for state management
 import { useState } from 'react';
-// Import CSS styles for this component
+// CSS styles for event cards
 import './EventCard.css';
 
 /**
  * EventCard Component
  * 
  * Shows a single event with basic info visible and more details that can be expanded.
- * Users can click on the card to see more information like description, organizer, etc.
+ * Users can click on the card to see more information like description, organizer, etc...
  * 
  * @param {Object} event - All the event data from the API
  * @param {string} event.id - Unique identifier for the event
  * @param {string} event.title - Event name/title
  * @param {string} event.dateTime - Event date and time
  * @param {string} event.location - Event venue and location
- * @param {string} event.description - Detailed event description
+ * @param {string} event.description - Detailed event description (not always provided by event organizer)
  * @param {string} event.organizer - Event organizer/promoter
  * @param {string} event.category - Event category/type
  * @param {string} event.price - Event pricing information
@@ -28,7 +28,7 @@ const EventCard = ({ event }) => {
    * Toggle the expanded state when user clicks the card
    * 
    * This flips the boolean - if it was false, make it true, and vice versa.
-   * This controls whether we show the full event details or just the basic info.
+   * Controls whether we show the full event details or just the basic info.
    */
   const toggleExpanded = () => {
     setIsExpanded(!isExpanded);
@@ -44,17 +44,19 @@ const EventCard = ({ event }) => {
    * @returns {string} A nicely formatted date string
    */
   const formatDate = (dateString) => {
-    // Create a Date object from the string
+    // Create a Date object from the raw date string
     const date = new Date(dateString);
     
     // Format it in a user-friendly way
+    // Uses a built-in JavaScript function to format the date, and specifies
+    // how to display each date component
     return date.toLocaleDateString('en-US', {
-      weekday: 'long',    // Full day name (Monday, Tuesday, etc.)
+      weekday: 'long',    // Full day name (Monday, Tuesday, etc...)
       year: 'numeric',    // Full year (2024)
-      month: 'long',      // Full month name (January, February, etc.)
-      day: 'numeric',     // Day of month (1, 2, 3, etc.)
-      hour: '2-digit',    // Hour in 2-digit format (01, 02, etc.)
-      minute: '2-digit'   // Minute in 2-digit format (01, 02, etc.)
+      month: 'long',      // Full month name (January, February, etc...)
+      day: 'numeric',     // Day of month (1, 2, 3, etc...)
+      hour: '2-digit',    // Hour in 2-digit format (01, 02, etc...)
+      minute: '2-digit'   // Minute in 2-digit format (01, 02, etc...)
     });
   };
 
@@ -70,7 +72,7 @@ const EventCard = ({ event }) => {
           <span className="event-date">{formatDate(event.dateTime)}</span>
         </div>
         
-        {/* Event location with map pin emoji */}
+        {/* Event location with map pin emoji (I thought it was a simple alternative to a custom icon)*/}
         <div className="event-location">
           <span>📍 {event.location}</span>
         </div>
@@ -83,7 +85,7 @@ const EventCard = ({ event }) => {
 
       {/* 
         Expanded details section - only shown when card is expanded
-        The && operator means "only show this if isExpanded is true"
+        The && operator effectively transaltes to "only show this if isExpanded is true"
       */}
       {isExpanded && (
         <div className="event-details">
@@ -110,7 +112,10 @@ const EventCard = ({ event }) => {
 
           {/* Action buttons */}
           <div className="event-actions">
-            {/* Only show ticket button if we have a URL */}
+            {/* 
+              Only show ticket button if we have a URL (target="_blank" opens in new tab
+              and rel="noopener noreferrer" prevents security issues) 
+            */}
             {event.url && (
               <a 
                 href={event.url} 

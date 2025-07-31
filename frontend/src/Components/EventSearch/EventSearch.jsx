@@ -16,6 +16,7 @@ import './EventSearch.css';
  */
 const EventSearch = ({ onSearch, currentLocation, isVisible = false }) => {
   // All the form field values - this is what gets sent to the API
+  // The state variable default values can be seen in the search preferences form.
   const [searchData, setSearchData] = useState({
     eventCount: 10,      // How many events to show (default 10)
     radius: 80,          // Search radius in km (default 80km)
@@ -26,7 +27,7 @@ const EventSearch = ({ onSearch, currentLocation, isVisible = false }) => {
     category: ''         // What type of events (music, sports, etc.)
   });
 
-  // Visual feedback when button is pressed
+  // Visual feedback tracking for when button is pressed
   const [isButtonActive, setIsButtonActive] = useState(false);
 
   // Show error messages to user if something goes wrong
@@ -35,7 +36,7 @@ const EventSearch = ({ onSearch, currentLocation, isVisible = false }) => {
   /**
    * Handle when user submits the search form
    * 
-   * This runs when they click "Search Events" or press Enter.
+   * This runs when they click "Search Events" or press "Enter".
    * We validate the input, prepare the data, and send it to the parent.
    * 
    * @param {Event} e - The form submission event
@@ -50,14 +51,14 @@ const EventSearch = ({ onSearch, currentLocation, isVisible = false }) => {
       return;
     }
     
-    // Give button press feedback
+    // Give button press feedback, then reset after 150ms
     setIsButtonActive(true);
     setTimeout(() => setIsButtonActive(false), 150);
 
     // Clear any old error messages
     setErrorMessage('');
 
-    // Combine our form data with the location from the navbar
+    // Combine our form data with the location from the navbar (header)
     const searchParams = {
       ...searchData,
       location: currentLocation,
@@ -80,7 +81,8 @@ const EventSearch = ({ onSearch, currentLocation, isVisible = false }) => {
     // Get the field name and new value from the input
     const { name, value } = e.target;
     
-    // Update the state with the new value
+    // Copy all previous state data, then update "name" with the new "value"
+    // If the field is a number, convert the string to a number (parseInt); otherwise, keep the string
     setSearchData(prev => ({
       ...prev,
       [name]: name === 'eventCount' || name === 'radius' || name === 'priceMin' || name === 'priceMax' ? 
@@ -90,6 +92,8 @@ const EventSearch = ({ onSearch, currentLocation, isVisible = false }) => {
 
   // Render the search form
   return (
+    // Controls visibility of the entire form
+    // If isVisible is true, the 'visible' class is added; otherwise the 'hidden' class is added
     <div className={`event-search ${isVisible ? 'visible' : 'hidden'}`}>
       <h2>Find Events Near You</h2>
       
@@ -100,11 +104,14 @@ const EventSearch = ({ onSearch, currentLocation, isVisible = false }) => {
         </div>
       )}
       
-      {/* The actual search form */}
+      {/* This section is the actual search form */}
       <form onSubmit={handleSubmit} className="search-form">
 
         
-        {/* What type of events they want */}
+        {/* 
+        What type of events users want (i.e., keywords for different interests)
+        Note the use of 'handleChange' prop to update the state variable 'searchData' 
+        */}
         <div className="form-group">
           <label htmlFor="category">Category:</label>
           <input
@@ -117,7 +124,7 @@ const EventSearch = ({ onSearch, currentLocation, isVisible = false }) => {
           />
         </div>
         
-        {/* How far to search from their location */}
+        {/* How far to look for events from the user's location input */}
         <div className="form-group">
           <label htmlFor="radius">Search Radius (km):</label>
           <input
@@ -132,7 +139,10 @@ const EventSearch = ({ onSearch, currentLocation, isVisible = false }) => {
           />
         </div>
         
-        {/* When they want to see events */}
+        {/* 
+        Date range for applicable events (i.e., start and end dates) 
+        The min date for 'endDate' keyword is set to the start date, or today's date if no start date is given
+        */}
         <div className="form-group">
           <div className="date-inputs">
             {/* Start date */}
@@ -165,7 +175,7 @@ const EventSearch = ({ onSearch, currentLocation, isVisible = false }) => {
           </div>
         </div>
         
-        {/* How much they want to spend */}
+        {/* How much users want to spend on event tickets */}
         <div className="form-group">
           <div className="price-inputs">
             {/* Minimum price */}
