@@ -191,7 +191,7 @@ const MapView = ({ location, submittedLocation, events }) => {
         const position = results[0].geometry.location;
         // Move the map to the new location and zoom in a bit
         mapInstanceRef.current.setCenter(position);
-        mapInstanceRef.current.setZoom(13);
+        mapInstanceRef.current.setZoom(12);
       }
     });
   }, [submittedLocation]); // Only trigger when submittedLocation changes, not on every keystroke
@@ -213,7 +213,7 @@ const MapView = ({ location, submittedLocation, events }) => {
           position: event.venueCoordinates,
           map: mapInstanceRef.current,
           title: event.title,
-          // Use a blue marker that matches our app's theme
+          // The marker color is temporarily blue to contrast with the overall dark theme
           icon: {
             path: window.google.maps.SymbolPath.CIRCLE,
             scale: 8,

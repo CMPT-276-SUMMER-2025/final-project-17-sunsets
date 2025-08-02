@@ -37,7 +37,7 @@ function App() {
   // When user hits Enter in location field, mark as submitted
   const handleLocationSubmit = (location) => {
     setCurrentLocation(location);
-    setLocationSubmitted(true);
+    setLocationSubmitted(true); // Boolean to prevent submission of location upon every keystroke
     setSubmittedLocation(location); // Store the location that was submitted for geocoding
   };
 
@@ -52,14 +52,14 @@ function App() {
       <Navbar onLocationChange={handleLocationChange} onLocationSubmit={handleLocationSubmit} />
       
       <main className="app-main">
-        {/* Map panel on the left - takes up 2/3 of the page */}
+        {/* Map panel on the left - takes up left 2/3 of the page */}
         <MapView 
           location={currentLocation} 
           submittedLocation={submittedLocation}
           events={events}
         />
         
-        {/* Content panel on the right - takes up 1/3 of the page */}
+        {/* Content panel on the right - takes up right 1/3 of the page */}
         <div className="content-panel">
           {showSearch ? (
             // Show search form when user hasn't submitted yet
