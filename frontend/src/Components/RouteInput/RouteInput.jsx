@@ -61,10 +61,12 @@ const RouteInput = ({ selectedEvent, onBack }) => {
   };
 
   /**
-   * Get user's current location using browser geolocation with progressive accuracy enhancement
+   * Get user's current location using browser geolocation with progressive accuracy
+   * 
    * Attempts to get the user's location with increasing accuracy by making multiple attempts
-   * with longer timeouts. This helps improve accuracy especially on mobile devices where
-   * GPS needs time to acquire satellite signals.
+   * with longer timeouts
+   * 
+   * This may help to improve accuracy, but can also increase the wait time for geolocation data to return
    */
   const handleGetLocation = () => {
     setIsLoadingLocation(true);
@@ -188,26 +190,25 @@ const RouteInput = ({ selectedEvent, onBack }) => {
 
       <div className="route-form">
         <div className="input-group">
-          <label htmlFor="user-address">Your Starting Location:</label>
-          <input
-            id="user-address"
-            type="text"
-            value={userAddress}
-            onChange={handleAddressChange}
-            placeholder="Enter your address (e.g., 123 Main St, Vancouver, BC)"
-            className={locationError ? 'error' : ''}
-          />
+          <label htmlFor="user-address">Starting Location:</label>
+          <div className="input-button-row">
+            <input
+              id="user-address"
+              type="text"
+              value={userAddress}
+              onChange={handleAddressChange}
+              placeholder="Enter your address (e.g., 123 Main St, Vancouver, BC)"
+              className={locationError ? 'error' : ''}
+            />
+            <button 
+              className="geolocation-button"
+              onClick={handleGetLocation}
+              disabled={isLoadingLocation}
+            >
+              {isLoadingLocation ? 'Getting Location...' : '📍 Use Geolocation'}
+            </button>
+          </div>
           {locationError && <p className="error-message">{locationError}</p>}
-        </div>
-
-        <div className="location-options">
-          <button 
-            className="geolocation-button"
-            onClick={handleGetLocation}
-            disabled={isLoadingLocation}
-          >
-            {isLoadingLocation ? 'Getting Location...' : '📍 Use My Location'}
-          </button>
         </div>
 
         <div className="route-actions">

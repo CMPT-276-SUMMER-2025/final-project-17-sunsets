@@ -1,4 +1,4 @@
-/* Basic route input styling - minimal for group members to enhance */
+/* Basic route input styling (feel free to work on this as needed) */
 .route-input {
   width: 100%;
   color: #fff;
@@ -70,6 +70,22 @@
 
 .input-group input.error {
   border-color: #e0527d;
+}
+
+.input-button-row {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+}
+
+.input-button-row input {
+  flex: 1;
+  min-width: 0; /* Prevents flex item from overflowing */
+}
+
+.input-button-row .geolocation-button {
+  flex-shrink: 0; /* Prevents button from shrinking */
+  white-space: nowrap; /* Keeps button text on one line */
 }
 
 .error-message {
