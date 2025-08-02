@@ -14,6 +14,7 @@ const RouteInput = ({ selectedEvent, onBack }) => {
   const [userAddress, setUserAddress] = useState('');
   const [isLoadingLocation, setIsLoadingLocation] = useState(false);
   const [locationError, setLocationError] = useState('');
+  const [selectedTransitMode, setSelectedTransitMode] = useState('TRANSIT'); // Default to transit
 
   /**
    * Handle address input change
@@ -22,6 +23,14 @@ const RouteInput = ({ selectedEvent, onBack }) => {
   const handleAddressChange = (e) => {
     setUserAddress(e.target.value);
     setLocationError(''); // Clear any previous errors
+  };
+
+  /**
+   * Handle transit mode selection
+   * Updates the selected transit mode state
+   */
+  const handleTransitModeChange = (mode) => {
+    setSelectedTransitMode(mode);
   };
 
   /**
@@ -209,6 +218,40 @@ const RouteInput = ({ selectedEvent, onBack }) => {
             </button>
           </div>
           {locationError && <p className="error-message">{locationError}</p>}
+        </div>
+
+        <div className="input-group">
+          <label>Transit Mode:</label>
+          <div className="transit-mode-buttons">
+            <button
+              type="button"
+              className={`transit-mode-button ${selectedTransitMode === 'WALK' ? 'active' : ''}`}
+              onClick={() => handleTransitModeChange('WALK')}
+            >
+              🚶 Walking
+            </button>
+            <button
+              type="button"
+              className={`transit-mode-button ${selectedTransitMode === 'TRANSIT' ? 'active' : ''}`}
+              onClick={() => handleTransitModeChange('TRANSIT')}
+            >
+              🚌 Transit
+            </button>
+            <button
+              type="button"
+              className={`transit-mode-button ${selectedTransitMode === 'DRIVE' ? 'active' : ''}`}
+              onClick={() => handleTransitModeChange('DRIVE')}
+            >
+              🚗 Driving
+            </button>
+            <button
+              type="button"
+              className={`transit-mode-button ${selectedTransitMode === 'BICYCLE' ? 'active' : ''}`}
+              onClick={() => handleTransitModeChange('BICYCLE')}
+            >
+              🚴 Cycling
+            </button>
+          </div>
         </div>
 
         <div className="route-actions">
