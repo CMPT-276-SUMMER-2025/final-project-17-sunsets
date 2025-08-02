@@ -1,0 +1,147 @@
+/* Basic route input styling - minimal for group members to enhance */
+.route-input {
+  width: 100%;
+  color: #fff;
+}
+
+.route-header {
+  margin-bottom: 2rem;
+}
+
+.route-header h2 {
+  margin: 0 0 1rem 0;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.selected-event {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.selected-event h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.selected-event p {
+  margin: 0.25rem 0;
+  color: #ccc;
+  font-size: 0.9rem;
+}
+
+.route-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.input-group label {
+  font-weight: 600;
+  color: #fff;
+  font-size: 0.9rem;
+}
+
+.input-group input {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  padding: 0.75rem;
+  color: #fff;
+  font-size: 1rem;
+}
+
+.input-group input:focus {
+  outline: none;
+  border-color: #b46cff;
+}
+
+.input-group input.error {
+  border-color: #e0527d;
+}
+
+.error-message {
+  color: #e0527d;
+  font-size: 0.85rem;
+  margin: 0.25rem 0 0 0;
+}
+
+.location-options {
+  display: flex;
+  justify-content: center;
+}
+
+.geolocation-button {
+  background: #4a90e2;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.geolocation-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Basic testing display - minimal styling */
+.testing-display {
+  background: rgba(255, 193, 7, 0.1);
+  border: 1px solid rgba(255, 193, 7, 0.3);
+  border-radius: 8px;
+  padding: 1rem;
+  margin: 1rem 0;
+}
+
+.testing-display h4 {
+  margin: 0 0 0.5rem 0;
+  color: #ffc107;
+  font-size: 0.9rem;
+}
+
+.testing-display p {
+  margin: 0.25rem 0;
+  color: #fff;
+  font-size: 0.85rem;
+}
+
+.testing-display strong {
+  color: #ffc107;
+}
+
+.route-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.calculate-route-button {
+  background: #b46cff;
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 12px;
+  font-size: 1rem;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.calculate-route-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+} 

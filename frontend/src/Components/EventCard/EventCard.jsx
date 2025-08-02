@@ -19,8 +19,9 @@ import './EventCard.css';
  * @param {string} event.category - Event category/type
  * @param {string} event.price - Event pricing information
  * @param {string} event.url - Direct link to buy tickets
+ * @param {Function} onRouteRequest - Callback when route button is clicked
  */
-const EventCard = ({ event }) => {
+const EventCard = ({ event, onRouteRequest }) => {
   // Track whether the card is expanded to show full details
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -32,6 +33,16 @@ const EventCard = ({ event }) => {
    */
   const toggleExpanded = () => {
     setIsExpanded(!isExpanded);
+  };
+
+  /**
+   * Handle route button click
+   */
+  const handleRouteClick = (e) => {
+    e.stopPropagation(); // Prevent card expansion when clicking route button
+    if (onRouteRequest) {
+      onRouteRequest(event);
+    }
   };
 
   /**
@@ -126,7 +137,7 @@ const EventCard = ({ event }) => {
                 🎫 Buy Tickets
               </a>
             )}
-            <button className="route-button">
+            <button className="route-button" onClick={handleRouteClick}>
               🗺️ Route
             </button>
           </div>

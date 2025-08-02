@@ -3,6 +3,7 @@ import Navbar from './Components/Navbar/Navbar'
 import EventSearch from './Components/EventSearch/EventSearch'
 import EventList from './Components/EventList/EventList'
 import MapView from './Components/MapView/MapView'
+import RouteInput from './Components/RouteInput/RouteInput'
 import './App.css'
 
 function App() {
@@ -13,11 +14,16 @@ function App() {
   const [locationSubmitted, setLocationSubmitted] = useState(false); // Tracks if user submitted location
   const [submittedLocation, setSubmittedLocation] = useState(''); // Location that was actually submitted
   const [events, setEvents] = useState([]); // Store events for map markers
+  
+  // Route mode state
+  const [isRouteMode, setIsRouteMode] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState(null);
 
   // When user submits search form, switch to results view
   const handleSearch = (params) => {
     setSearchParams(params);
     setShowSearch(false);
+    setIsRouteMode(false); // Exit route mode if in it
     // Clear existing events when new search is performed
     setEvents([]);
   };
@@ -26,6 +32,8 @@ function App() {
   const handleBackToSearch = () => {
     setShowSearch(true);
     setSearchParams(null);
+    setIsRouteMode(false); // Exit route mode
+    setSelectedEvent(null);
     setEvents([]); // Clear events when going back to search
   };
 
@@ -44,6 +52,21 @@ function App() {
   // Update events when EventList fetches them
   const handleEventsUpdate = (newEvents) => {
     setEvents(newEvents);
+  };
+
+  // Handle route button click from event card
+  const handleRouteRequest = (event) => {
+    setSelectedEvent(event);
+    setIsRouteMode(true);
+    setShowSearch(false); // Hide search form
+  };
+
+  // Handle back from route mode
+  const handleBackFromRoute = () => {
+    setIsRouteMode(false);
+    setSelectedEvent(null);
+    // Return to event list view
+    setShowSearch(false);
   };
 
   return (
@@ -68,6 +91,12 @@ function App() {
               currentLocation={currentLocation}
               isVisible={locationSubmitted}
             />
+          ) : isRouteMode ? (
+            // Show route input interface
+            <RouteInput 
+              selectedEvent={selectedEvent}
+              onBack={handleBackFromRoute}
+            />
           ) : (
             // Show results with back button after search
             <div className="results-container">
@@ -77,6 +106,7 @@ function App() {
               <EventList 
                 searchParams={searchParams} 
                 onEventsUpdate={handleEventsUpdate}
+                onRouteRequest={handleRouteRequest}
               />
             </div>
           )}
