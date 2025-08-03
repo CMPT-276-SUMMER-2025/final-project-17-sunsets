@@ -122,4 +122,17 @@
   box-shadow: 0 1px 4px rgba(228, 82, 125, 0.18);
 }
 
+/* Logo styling */
+.navbar-logo {
+  height: 32px;
+  width: auto;
+  margin-right: 0.75rem;
+  vertical-align: middle;
+}
+
+.navbar-title {
+  display: flex;
+  align-items: center;
+}
+
 

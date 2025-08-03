@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import './Navbar.css';
+// Import the logo
+import logo from '../../assets/MetropoLive.jpg';
 
 /**
  * Navbar Component
@@ -60,8 +62,9 @@ const Navbar = ({ onLocationChange, onLocationSubmit }) => {
 
   return (
     <nav className="navbar">
-      {/* App title on the left side */}
+      {/* App title with logo on the left side */}
       <div className="navbar-title">
+        <img src={logo} alt="MetropoLive Logo" className="navbar-logo" />
         <h1>MetropoLive</h1>
       </div>
       
