@@ -12,4 +12,5 @@ export default defineConfig({
     port: process.env.PORT,
     host: true,
     allowedHosts: ['metropolive.onrender.com']
+  }
 })
