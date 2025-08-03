@@ -15,6 +15,15 @@ const RouteInput = ({ selectedEvent, onBack }) => {
   const [isLoadingLocation, setIsLoadingLocation] = useState(false);
   const [locationError, setLocationError] = useState('');
   const [selectedTransitMode, setSelectedTransitMode] = useState('TRANSIT'); // Default to transit
+  const [transitPreferences, setTransitPreferences] = useState({
+    avoidTolls: false,
+    avoidHighways: false,
+    avoidHills: false,
+    avoidBusyRoads: false,
+    lessWalking: false,
+    fewerTransfers: false,
+    bicycleType: 'REGULAR'
+  });
 
   /**
    * Handle address input change
@@ -31,6 +40,129 @@ const RouteInput = ({ selectedEvent, onBack }) => {
    */
   const handleTransitModeChange = (mode) => {
     setSelectedTransitMode(mode);
+  };
+
+  /**
+   * Handle transit preference toggle
+   * Updates the transit preferences state
+   */
+  const handlePreferenceToggle = (preference) => {
+    setTransitPreferences(prev => ({
+      ...prev,
+      [preference]: !prev[preference]
+    }));
+  };
+
+  /**
+   * Handle bicycle type change
+   * Updates the bicycle type preference
+   */
+  const handleBicycleTypeChange = (type) => {
+    setTransitPreferences(prev => ({
+      ...prev,
+      bicycleType: type
+    }));
+  };
+
+  /**
+   * Render transit preference buttons based on selected mode
+   * Returns appropriate preference buttons for each transit mode
+   */
+  const renderTransitPreferences = () => {
+    switch (selectedTransitMode) {
+      case 'DRIVE':
+        return (
+          <div className="input-group">
+            <label>Driving Options:</label>
+            <div className="transit-preferences">
+              <button
+                type="button"
+                className={`preference-button ${transitPreferences.avoidTolls ? 'active' : ''}`}
+                onClick={() => handlePreferenceToggle('avoidTolls')}
+              >
+                🚫 Avoid Tolls
+              </button>
+              <button
+                type="button"
+                className={`preference-button ${transitPreferences.avoidHighways ? 'active' : ''}`}
+                onClick={() => handlePreferenceToggle('avoidHighways')}
+              >
+                🛣️ Avoid Highways
+              </button>
+            </div>
+          </div>
+        );
+
+      case 'BICYCLE':
+        return (
+          <div className="input-group">
+            <label>Cycling Options:</label>
+            <div className="transit-preferences">
+              <div className="bicycle-type-buttons">
+                <button
+                  type="button"
+                  className={`preference-button ${transitPreferences.bicycleType === 'REGULAR' ? 'active' : ''}`}
+                  onClick={() => handleBicycleTypeChange('REGULAR')}
+                >
+                  🚴 Regular Bike
+                </button>
+                <button
+                  type="button"
+                  className={`preference-button ${transitPreferences.bicycleType === 'ELECTRIC' ? 'active' : ''}`}
+                  onClick={() => handleBicycleTypeChange('ELECTRIC')}
+                >
+                  ⚡ E-Bike
+                </button>
+              </div>
+              <div className="bicycle-preference-buttons">
+                <button
+                  type="button"
+                  className={`preference-button ${transitPreferences.avoidHills ? 'active' : ''}`}
+                  onClick={() => handlePreferenceToggle('avoidHills')}
+                >
+                  🏔️ Avoid Hills
+                </button>
+                <button
+                  type="button"
+                  className={`preference-button ${transitPreferences.avoidBusyRoads ? 'active' : ''}`}
+                  onClick={() => handlePreferenceToggle('avoidBusyRoads')}
+                >
+                  🛣️ Quiet Roads
+                </button>
+              </div>
+            </div>
+          </div>
+        );
+
+      case 'TRANSIT':
+        return (
+          <div className="input-group">
+            <label>Transit Options:</label>
+            <div className="transit-preferences">
+              <button
+                type="button"
+                className={`preference-button ${transitPreferences.lessWalking ? 'active' : ''}`}
+                onClick={() => handlePreferenceToggle('lessWalking')}
+              >
+                🚶 Less Walking
+              </button>
+              <button
+                type="button"
+                className={`preference-button ${transitPreferences.fewerTransfers ? 'active' : ''}`}
+                onClick={() => handlePreferenceToggle('fewerTransfers')}
+              >
+                🔄 Fewer Transfers
+              </button>
+            </div>
+          </div>
+        );
+
+      case 'WALK':
+        return null; // No specific preferences for walking in Routes API
+
+      default:
+        return null;
+    }
   };
 
   /**
@@ -253,6 +385,8 @@ const RouteInput = ({ selectedEvent, onBack }) => {
             </button>
           </div>
         </div>
+
+        {renderTransitPreferences()}
 
         <div className="route-actions">
           <button 
