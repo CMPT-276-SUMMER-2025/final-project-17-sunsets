@@ -135,4 +135,15 @@
   align-items: center;
 }
 
+/* Clickable logo hover effect */
+.clickable-logo {
+  cursor: pointer;
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.clickable-logo:hover {
+  transform: scale(1.1);
+  filter: brightness(1.2);
+}
+
 

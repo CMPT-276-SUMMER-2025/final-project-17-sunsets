@@ -64,7 +64,13 @@ const Navbar = ({ onLocationChange, onLocationSubmit }) => {
     <nav className="navbar">
       {/* App title with logo on the left side */}
       <div className="navbar-title">
-        <img src={logo} alt="MetropoLive Logo" className="navbar-logo" />
+        <img 
+          src={logo} 
+          alt="MetropoLive Logo" 
+          className="navbar-logo clickable-logo"
+          onClick={() => window.location.reload()}
+          title="Click to refresh the page"
+        />
         <h1>MetropoLive</h1>
       </div>
       
