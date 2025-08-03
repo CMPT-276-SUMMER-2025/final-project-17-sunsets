@@ -114,7 +114,7 @@
   width: 33.333%;
   min-width: 350px;
   flex-shrink: 0;
-  height: calc(60vh + 9.5rem); /* Match MapView height exactly */
+  height: calc(60vh + 11rem); /* Account for dynamic MapView text */
   overflow-y: auto;
 }
 
