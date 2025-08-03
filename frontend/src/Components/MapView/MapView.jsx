@@ -10,10 +10,23 @@ import './MapView.css';
  * It loads the Google Maps API dynamically, sets up a dark-themed map, and centers it on the user's
  * entered location. The map provides a visual context for where events are happening.
  * 
+ * The component handles several key responsibilities:
+ * 1. Dynamic loading of the Google Maps API with proper error handling
+ * 2. Creating and managing the map instance with custom dark styling
+ * 3. Centering the map on user-submitted locations using geocoding
+ * 4. Displaying event markers with clickable information windows
+ * 5. Managing marker lifecycle (adding/removing markers when events change)
+ * 
+ * Future enhancements will include:
+ * - Displaying calculated routes between user location and event venues
+ * - Showing turn-by-turn directions on the map
+ * - Highlighting different route options based on transit mode
+ * 
  * @param {Object} props - Component properties
  * @param {string} props.location - The location the user entered (city, address, etc...) - for display only
  * @param {string} props.submittedLocation - The location that was actually submitted (for geocoding)
  * @param {Array} props.events - Array of events to display as markers on the map
+ * @returns {JSX.Element} The map view component
  */
 const MapView = ({ location, submittedLocation, events }) => {
   // Reference to the DOM element where the map will be rendered

@@ -6,9 +6,31 @@ import './RouteInput.css';
  * 
  * Displays the route input interface when user clicks "Route" on an event card.
  * Allows users to enter their starting address or use browser geolocation.
+ * Provides transit mode selection and routing preferences for different travel options.
+ * 
+ * The component manages multiple states including:
+ * - User address input and validation
+ * - Geolocation with progressive accuracy enhancement
+ * - Transit mode selection (WALK, TRANSIT, DRIVE, BICYCLE)
+ * - Dynamic routing preferences based on selected transit mode
+ * - Error handling for location services and address input
+ * 
+ * Key features:
+ * - Progressive geolocation accuracy with multiple attempts
+ * - Reverse geocoding to convert coordinates to readable addresses
+ * - Dynamic transit preference buttons that change based on selected mode
+ * - Support for eco-friendly routing options
+ * - Comprehensive error handling with user-friendly messages
+ * 
+ * Future enhancements will include:
+ * - Integration with Google Routes API for actual route calculation
+ * - Route display on the map
+ * - Turn-by-turn directions
+ * - Route history and saved routes
  * 
  * @param {Object} selectedEvent - The event the user wants to route to
  * @param {Function} onBack - Callback to return to event list
+ * @returns {JSX.Element} The route input interface component
  */
 const RouteInput = ({ selectedEvent, onBack }) => {
   const [userAddress, setUserAddress] = useState('');
@@ -22,7 +44,8 @@ const RouteInput = ({ selectedEvent, onBack }) => {
     avoidBusyRoads: false,
     lessWalking: false,
     fewerTransfers: false,
-    bicycleType: 'REGULAR'
+    bicycleType: 'REGULAR',
+    ecoFriendly: false
   });
 
   /**
@@ -88,6 +111,13 @@ const RouteInput = ({ selectedEvent, onBack }) => {
                 onClick={() => handlePreferenceToggle('avoidHighways')}
               >
                 🛣️ Avoid Highways
+              </button>
+              <button
+                type="button"
+                className={`preference-button ${transitPreferences.ecoFriendly ? 'active' : ''}`}
+                onClick={() => handlePreferenceToggle('ecoFriendly')}
+              >
+                🌱 Eco-Friendly
               </button>
             </div>
           </div>

@@ -6,6 +6,30 @@ import MapView from './Components/MapView/MapView'
 import RouteInput from './Components/RouteInput/RouteInput'
 import './App.css'
 
+/**
+ * Main App Component
+ * 
+ * This is the root component that manages the overall application state and coordinates
+ * between different views including search, event listing, and routing functionality.
+ * 
+ * The app implements a multi-view architecture where users can:
+ * 1. Search for events by location and various criteria
+ * 2. View events on an interactive map with markers
+ * 3. Access detailed routing information to plan trips to events
+ * 
+ * The component manages several key state variables that control the user experience:
+ * - Search parameters and results
+ * - Location tracking for map centering
+ * - Route mode activation and event selection
+ * - View transitions between search, results, and routing
+ * 
+ * Future enhancements will include:
+ * - Route display on the map when users calculate routes
+ * - Integration with the Google Routes API for actual route calculation
+ * - Route history and saved routes functionality
+ * 
+ * @returns {JSX.Element} The main application component
+ */
 function App() {
   // Main app state - controls what the user sees and manages data flow
   const [searchParams, setSearchParams] = useState(null);
@@ -15,7 +39,7 @@ function App() {
   const [submittedLocation, setSubmittedLocation] = useState(''); // Location that was actually submitted
   const [events, setEvents] = useState([]); // Store events for map markers
   
-  // Route mode state
+  // Route mode state - manages the routing interface and selected event
   const [isRouteMode, setIsRouteMode] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
 
@@ -92,7 +116,7 @@ function App() {
               isVisible={locationSubmitted}
             />
           ) : isRouteMode ? (
-            // Show route input interface
+            // Show route input interface when user clicks "Route" on an event
             <RouteInput 
               selectedEvent={selectedEvent}
               onBack={handleBackFromRoute}
