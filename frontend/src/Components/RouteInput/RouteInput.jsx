@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { calculateRoute, decodePolyline, formatDuration, formatDistance } from '../../services/routesApi';
 import './RouteInput.css';
 
 /**
@@ -30,9 +31,10 @@ import './RouteInput.css';
  * 
  * @param {Object} selectedEvent - The event the user wants to route to
  * @param {Function} onBack - Callback to return to event list
+ * @param {Function} onRouteCalculated - Callback to pass route data to parent
  * @returns {JSX.Element} The route input interface component
  */
-const RouteInput = ({ selectedEvent, onBack }) => {
+const RouteInput = ({ selectedEvent, onBack, onRouteCalculated }) => {
   const [userAddress, setUserAddress] = useState('');
   const [isLoadingLocation, setIsLoadingLocation] = useState(false);
   const [locationError, setLocationError] = useState('');
@@ -47,6 +49,11 @@ const RouteInput = ({ selectedEvent, onBack }) => {
     bicycleType: 'REGULAR',
     ecoFriendly: false
   });
+
+  // Route calculation states
+  const [isCalculatingRoute, setIsCalculatingRoute] = useState(false);
+  const [routeError, setRouteError] = useState('');
+  const [routeData, setRouteData] = useState(null);
 
   /**
    * Handle address input change
@@ -331,17 +338,97 @@ const RouteInput = ({ selectedEvent, onBack }) => {
   };
 
   /**
-   * Handle route calculation (placeholder for future implementation)
-   * Validates that user has entered a starting location before proceeding
+   * Handle route calculation using Google Routes API
+   * Validates user input, geocodes addresses, and calculates routes
    */
-  const handleCalculateRoute = () => {
+  const handleCalculateRoute = async () => {
     if (!userAddress.trim()) {
       setLocationError('Please enter your starting address or use your current location.');
       return;
     }
-    
-    // TODO: Implement actual route calculation using Google Routes API
-    console.log('Calculating route from:', userAddress, 'to:', selectedEvent.title);
+
+    setIsCalculatingRoute(true);
+    setRouteError('');
+    setRouteData(null);
+
+    try {
+      // Geocode the user's address to get coordinates
+      const geocoder = new window.google.maps.Geocoder();
+      const userLocationPromise = new Promise((resolve, reject) => {
+        geocoder.geocode({ address: userAddress }, (results, status) => {
+          if (status === 'OK' && results[0]) {
+            const location = results[0].geometry.location;
+            resolve({ lat: location.lat(), lng: location.lng() });
+          } else {
+            reject(`Could not find coordinates for: ${userAddress}`);
+          }
+        });
+      });
+
+      // Geocode the event location to get coordinates
+      const eventLocationPromise = new Promise((resolve, reject) => {
+        geocoder.geocode({ address: selectedEvent.location }, (results, status) => {
+          if (status === 'OK' && results[0]) {
+            const location = results[0].geometry.location;
+            resolve({ lat: location.lat(), lng: location.lng() });
+          } else {
+            reject(`Could not find coordinates for event location: ${selectedEvent.location}`);
+          }
+        });
+      });
+
+      // Wait for both geocoding operations to complete
+      const [userLocation, eventLocation] = await Promise.all([userLocationPromise, eventLocationPromise]);
+
+      console.log('User Location:', userLocation);
+      console.log('Event Location:', eventLocation);
+
+      // Calculate the route using the Routes API
+      const routeResponse = await calculateRoute(
+        userLocation,
+        eventLocation,
+        selectedTransitMode,
+        transitPreferences
+      );
+
+      if (routeResponse.routes && routeResponse.routes.length > 0) {
+        const route = routeResponse.routes[0];
+        
+        console.log('Route response:', route);
+        console.log('Encoded polyline:', route.polyline.encodedPolyline);
+        
+        // Decode the polyline for map display
+        const routeCoordinates = decodePolyline(route.polyline.encodedPolyline);
+        
+        console.log('Decoded coordinates for map:', routeCoordinates);
+        
+        // Format the route data
+        const formattedRouteData = {
+          distance: formatDistance(route.distanceMeters),
+          duration: formatDuration(route.duration),
+          coordinates: routeCoordinates,
+          travelMode: selectedTransitMode,
+          preferences: transitPreferences
+        };
+
+        console.log('Formatted route data:', formattedRouteData);
+
+        setRouteData(formattedRouteData);
+        
+        // Pass route data to parent component for map display
+        if (onRouteCalculated) {
+          onRouteCalculated(formattedRouteData);
+        }
+      } else {
+        setRouteError('No route found. Please try different preferences or locations.');
+      }
+
+    } catch (error) {
+      console.error('Route calculation error:', error);
+      setRouteError(`Route calculation failed: ${error.message}`);
+    } finally {
+      setIsCalculatingRoute(false);
+    }
   };
 
   return (
@@ -422,11 +509,25 @@ const RouteInput = ({ selectedEvent, onBack }) => {
           <button 
             className="calculate-route-button"
             onClick={handleCalculateRoute}
-            disabled={!userAddress.trim()}
+            disabled={!userAddress.trim() || isCalculatingRoute}
           >
-            🗺️ Calculate Route
+            {isCalculatingRoute ? 'Calculating Route...' : '🗺️ Calculate Route'}
           </button>
         </div>
+
+        {/* Display route results */}
+        {routeError && <p className="error-message">{routeError}</p>}
+        
+        {routeData && (
+          <div className="route-results">
+            <h3>Route Found!</h3>
+            <div className="route-info">
+              <p><strong>Distance:</strong> {routeData.distance}</p>
+              <p><strong>Duration:</strong> {routeData.duration}</p>
+              <p><strong>Mode:</strong> {routeData.travelMode}</p>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

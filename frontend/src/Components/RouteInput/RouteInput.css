@@ -241,4 +241,29 @@
 .calculate-route-button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.route-results {
+  background: rgba(74, 144, 226, 0.1);
+  border: 1px solid rgba(74, 144, 226, 0.3);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-top: 1rem;
+}
+
+.route-results h3 {
+  margin: 0 0 1rem 0;
+  color: #4a90e2;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.route-info p {
+  margin: 0.5rem 0;
+  color: #fff;
+  font-size: 0.9rem;
+}
+
+.route-info strong {
+  color: #4a90e2;
 } 

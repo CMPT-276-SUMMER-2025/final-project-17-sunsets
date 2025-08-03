@@ -42,6 +42,7 @@ function App() {
   // Route mode state - manages the routing interface and selected event
   const [isRouteMode, setIsRouteMode] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
+  const [currentRoute, setCurrentRoute] = useState(null); // Store calculated route data
 
   // When user submits search form, switch to results view
   const handleSearch = (params) => {
@@ -89,8 +90,14 @@ function App() {
   const handleBackFromRoute = () => {
     setIsRouteMode(false);
     setSelectedEvent(null);
+    setCurrentRoute(null); // Clear route data when exiting route mode
     // Return to event list view
     setShowSearch(false);
+  };
+
+  // Handle route calculation results from RouteInput
+  const handleRouteCalculated = (routeData) => {
+    setCurrentRoute(routeData);
   };
 
   return (
@@ -104,6 +111,7 @@ function App() {
           location={currentLocation} 
           submittedLocation={submittedLocation}
           events={events}
+          currentRoute={currentRoute}
         />
         
         {/* Content panel on the right - takes up right 1/3 of the page */}
@@ -120,6 +128,7 @@ function App() {
             <RouteInput 
               selectedEvent={selectedEvent}
               onBack={handleBackFromRoute}
+              onRouteCalculated={handleRouteCalculated}
             />
           ) : (
             // Show results with back button after search

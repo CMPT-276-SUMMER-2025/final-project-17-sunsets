@@ -29,10 +29,27 @@
 }
 
 .map-header p {
-  margin: 0;
-  font-size: 1rem;
+  margin: 0.25rem 0;
   color: #ccc;
-  opacity: 0.9;
+  font-size: 0.9rem;
+}
+
+.route-summary {
+  background: rgba(74, 144, 226, 0.1);
+  border: 1px solid rgba(74, 144, 226, 0.3);
+  border-radius: 8px;
+  padding: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.route-summary p {
+  margin: 0.25rem 0;
+  color: #fff;
+  font-size: 0.85rem;
+}
+
+.route-summary strong {
+  color: #4a90e2;
 }
 
 /* Map container - where Google Maps renders */
