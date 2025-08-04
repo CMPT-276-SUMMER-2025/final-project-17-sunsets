@@ -20,12 +20,28 @@
   margin-bottom: 1rem;
 }
 
+/* Application title styling */
+.navbar-title h1 {
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 700;
+  background: linear-gradient(90deg, #6a3d9e 0%, #a03a5a 100%); /* Darker purple to darker pink gradient */
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: none;
+  filter: drop-shadow(0 0 6px rgba(106, 61, 158, 0.3)) drop-shadow(0 0 12px rgba(160, 58, 90, 0.15));
+}
+
 .map-header h2 {
   margin: 0 0 0.5rem 0;
   font-size: 1.8rem;
   font-weight: 700;
-  color: #fff;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  background: linear-gradient(90deg, #6a3d9e 0%, #a03a5a 100%); /* Darker purple to darker pink gradient */
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 6px rgba(106, 61, 158, 0.3)) drop-shadow(0 0 12px rgba(160, 58, 90, 0.15));
 }
 
 .map-header p {
@@ -104,4 +120,17 @@
   .map-container {
     height: 40vh;
   }
+} 
+
+/* Search form title styling */
+.event-search h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-size: 1.8rem;
+  font-weight: 700;
+  background: linear-gradient(90deg, #6a3d9e 0%, #a03a5a 100%); /* Darker purple to darker pink gradient */
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 6px rgba(106, 61, 158, 0.3)) drop-shadow(0 0 12px rgba(160, 58, 90, 0.15));
 } 

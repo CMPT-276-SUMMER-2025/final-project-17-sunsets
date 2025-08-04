@@ -1,5 +1,5 @@
 // React hook for managing component state
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 // Import CSS styles for this component
 import './EventSearch.css';
 
@@ -13,8 +13,9 @@ import './EventSearch.css';
  * @param {Function} onSearch - Called when form is submitted with search parameters
  * @param {string} currentLocation - The location user entered in the navbar
  * @param {boolean} isVisible - Whether this form should be shown (depends on location being entered)
+ * @param {Object} previousSearchData - Previous search data to populate form fields
  */
-const EventSearch = ({ onSearch, currentLocation, isVisible = false }) => {
+const EventSearch = ({ onSearch, currentLocation, isVisible = false, previousSearchData = null }) => {
   // All the form field values - this is what gets sent to the API
   // The state variable default values can be seen in the search preferences form.
   const [searchData, setSearchData] = useState({
@@ -32,6 +33,21 @@ const EventSearch = ({ onSearch, currentLocation, isVisible = false }) => {
 
   // Show error messages to user if something goes wrong
   const [errorMessage, setErrorMessage] = useState('');
+
+  // Populate form with previous search data when available
+  useEffect(() => {
+    if (previousSearchData) {
+      setSearchData({
+        eventCount: previousSearchData.eventCount || 10,
+        radius: previousSearchData.radius || 80,
+        startDate: previousSearchData.startDate || '',
+        endDate: previousSearchData.endDate || '',
+        priceMin: previousSearchData.priceMin || '',
+        priceMax: previousSearchData.priceMax || '',
+        category: previousSearchData.category || ''
+      });
+    }
+  }, [previousSearchData]);
 
   /**
    * Handle when user submits the search form
