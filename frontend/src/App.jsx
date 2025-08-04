@@ -27,6 +27,7 @@ function App() {
     setShowSearch(true);
     setSearchParams(null);
     setEvents([]); // Clear events when going back to search
+    setLocationSubmitted(false); // Reset location submitted state
   };
 
   // Update location as user types (for real-time feedback)
@@ -39,6 +40,11 @@ function App() {
     setCurrentLocation(location);
     setLocationSubmitted(true);
     setSubmittedLocation(location); // Store the location that was submitted for geocoding
+    
+    // Clear previous search results and show search form for new location
+    setSearchParams(null);
+    setShowSearch(true);
+    setEvents([]); // Clear existing events
   };
 
   // Update events when EventList fetches them
