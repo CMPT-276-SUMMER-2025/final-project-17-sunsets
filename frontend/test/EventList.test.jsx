@@ -24,7 +24,7 @@ describe('EventList tests', () => {
             description: 'Not a real concert',
             organizer: 'No one',
             category: 'music',
-            price: '50-120 CAD',
+            priceRange: { min: 50, max: 90 },
             url: 'www.notarealwebsite.com/tickets/1'
         },
         {
@@ -35,8 +35,19 @@ describe('EventList tests', () => {
             description: 'Not a real game',
             organizer: 'No one',
             category: 'sports',
-            price: '70-150 CAD',
+            priceRange: { min: 110, max: 150 },
             url: 'www.notarealwebsite.com/tickets/2'
+        },
+        {
+            id: '3',
+            title: 'Comedy Show',
+            dateTime: '2025-010-01T18:00:00',
+            location: 'Surrey',
+            description: 'Not a real show',
+            organizer: 'No one',
+            category: 'comedy',
+            priceRange: { min: 20, max: 50 },
+            url: 'www.notarealwebsite.com/tickets/3'
         }
     ]
 
@@ -70,6 +81,7 @@ describe('EventList tests', () => {
         await waitFor(() => {
             expect(screen.getByText('Concert')).toBeInTheDocument()
             expect(screen.queryByText('Basketball Game')).not.toBeInTheDocument()
+            expect(screen.queryByText('Comedy Show')).not.toBeInTheDocument()
         })
     })
 
@@ -93,12 +105,78 @@ describe('EventList tests', () => {
             />
         )
 
+        // Check that events are within 50 km
         await waitFor(() => {
             expect(fetchEvents).toHaveBeenCalledWith(
                 expect.objectContaining({
                     radius: 50
                 })
             )
+        })
+    })
+
+    // Check if events are within the date range
+    it('Display events within the date range', async () => {
+        // Return filtered events
+        const filteredEvents = mockEvents.filter(event => 
+            new Date(event.dateTime) >= new Date('2025-07-01') && 
+            new Date(event.dateTime) <= new Date('2025-09-01')
+        )
+        fetchEvents.mockResolvedValue(filteredEvents)
+
+        render(
+            <EventList
+                searchParams = {{
+                    location: 'Burnaby',
+                    keywords: '',
+                    eventCount: 10,
+                    radius: 100,
+                    startDate: '2025-07-01',
+                    endDate: '2025-09-01',
+                    priceMin: 0,
+                    priceMax: 1000
+                }}
+            />
+        )
+
+        // Check if events are in July/August 2025
+        await waitFor(() => {
+            expect(screen.getByText('Concert')).toBeInTheDocument()
+            expect(screen.getByText('Basketball Game')).toBeInTheDocument()
+            expect(screen.queryByText('Comedy Show')).not.toBeInTheDocument()
+        })
+    })
+
+    // Check if events are within price range
+    it('Displays events within the price range', async () => {
+        // Return filtered events
+        fetchEvents.mockResolvedValue(
+            mockEvents.filter(event => {
+                if (!event.priceRange) return true // Free
+                return event.priceRange.max <= 100
+            })
+        )
+
+        render(
+            <EventList
+                searchParams = {{
+                    location: 'Vancouver',
+                    keywords: '',
+                    eventCount: 10,
+                    radius: 100,
+                    startDate: '',
+                    endDate: '',
+                    priceMin: 0,
+                    priceMax: 100
+                }}
+            />
+        )
+
+        // Check if events are under $100
+        await waitFor(() => {
+            expect(screen.getByText('Concert')).toBeInTheDocument()
+            expect(screen.queryByText('Basketball Game')).not.toBeInTheDocument()
+            expect(screen.getByText('Comedy Show')).toBeInTheDocument()
         })
     })
 })
