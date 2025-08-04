@@ -7,26 +7,21 @@ import RouteInput from './Components/RouteInput/RouteInput'
 import './App.css'
 
 /**
- * Main App Component
+ * ===== Main App Component =====
  * 
  * This is the root component that manages the overall application state and coordinates
- * between different views including search, event listing, and routing functionality.
+ * between different views including search, event listing, and routing functionality
  * 
- * The app implements a multi-view architecture where users can:
- * 1. Search for events by location and various criteria
- * 2. View events on an interactive map with markers
- * 3. Access detailed routing information to plan trips to events
+ * The app implements a multi-view UI approach where users can:
+ * - Search for events by location and various criteria
+ * - View events on an interactive map with markers
+ * - Access detailed routing information to plan trips to events
  * 
- * The component manages several key state variables that control the user experience:
+ * The component manages several key state variables that control key UX features:
  * - Search parameters and results
  * - Location tracking for map centering
- * - Route mode activation and event selection
- * - View transitions between search, results, and routing
- * 
- * Future enhancements will include:
- * - Route display on the map when users calculate routes
- * - Integration with the Google Routes API for actual route calculation
- * - Route history and saved routes functionality
+ * - Route transit-mode options and event selection
+ * - Basic loading transitions between search, results, and routing
  * 
  * @returns {JSX.Element} The main application component
  */

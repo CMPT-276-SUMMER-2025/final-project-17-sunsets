@@ -1,4 +1,4 @@
-/* Basic route input styling (feel free to work on this as needed) */
+/* Basic route input styling (feel free to stylize further to your liking) */
 .route-input {
   width: 100%;
   color: #fff;
@@ -191,6 +191,10 @@
   font-weight: 600;
 }
 
+.geolocation-button:hover {
+  background: #3a7bc8;
+}
+
 .geolocation-button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
@@ -224,6 +228,7 @@
 .route-actions {
   display: flex;
   justify-content: center;
+  gap: 1rem;
   margin-top: 1rem;
 }
 
@@ -238,7 +243,31 @@
   font-weight: 600;
 }
 
+.calculate-route-button:hover {
+  background: #9d5cd9;
+}
+
 .calculate-route-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.google-maps-button {
+  background: #34a853;
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 12px;
+  font-size: 1rem;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.google-maps-button:hover {
+  background: #2d8f47;
+}
+
+.google-maps-button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }

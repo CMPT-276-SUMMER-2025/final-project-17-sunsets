@@ -1,37 +1,45 @@
 /**
- * Routes API Service
+ * ===== Routes API Service =====
  * 
- * Handles calls to the Google Routes API for calculating routes between locations.
- * This service constructs API requests based on user preferences and processes responses
- * to extract route information including distance, duration, and encoded polylines.
+ * Handles calls to the Google Routes API for calculating paths between two locations
+ * This service file constructs API requests based on user preferences and processes responses
+ * in order to extract the route information that the user needs
+ * This includes distance, duration, and data encoded polylines that is displayed on the map panel
  */
 
+// 'decode' function is used to decode the encoded polyline string
+// This should be the latest library for decoding polylines
+import { decode } from '@googlemaps/polyline-codec'; 
+
+// Note: these API keys are only temporarily in plain view as I plan to setup a Netlify proxy server
 const API_KEY = 'AIzaSyDzzzTrEwFB6ase7tvNbnEsD562z2MG6vk';
 const ROUTES_API_URL = 'https://routes.googleapis.com/directions/v2:computeRoutes';
 
 /**
- * Calculate a route between two locations using Google Routes API
+ * Calculate a route between two locations with Routes API
  * 
  * @param {Object} origin - The starting location coordinates
  * @param {Object} destination - The destination location coordinates  
  * @param {string} travelMode - The travel mode (WALK, TRANSIT, DRIVE, BICYCLE)
- * @param {Object} preferences - User routing preferences
  * @returns {Promise<Object>} The route calculation response
  */
-export const calculateRoute = async (origin, destination, travelMode, preferences = {}) => {
+export const calculateRoute = async (origin, destination, travelMode) => {
   try {
     // Convert travel mode to proper API format
+    // This helper function is more for validation that the correct travel mode
+    // is being passed to the API endpoint, and ensures that a safe default is used
+    // in the event that something invalid is passed.
     const getTravelMode = (mode) => {
       switch (mode) {
         case 'DRIVE': return 'DRIVE';
         case 'WALK': return 'WALK';
         case 'BICYCLE': return 'BICYCLE';
         case 'TRANSIT': return 'TRANSIT';
-        default: return 'DRIVE';
+        default: return 'TRANSIT';
       }
     };
 
-    // Test with the exact format from Google's documentation
+    // From the request body based on the format examples provided in Routes API documentation
     const requestBody = {
       origin: {
         location: {
@@ -55,16 +63,12 @@ export const calculateRoute = async (origin, destination, travelMode, preference
       units: "METRIC"
     };
 
-    // Only add routing preference for DRIVE and TRANSIT modes
-    if (travelMode === 'DRIVE' || travelMode === 'TRANSIT') {
-      requestBody.routingPreference = "TRAFFIC_AWARE";
+    // Use the most optimal traffic-aware route for driving mode
+    if (travelMode === 'DRIVE') {
+      requestBody.routingPreference = "TRAFFIC_AWARE_OPTIMAL";
     }
 
-    console.log('Routes API Request:', JSON.stringify(requestBody, null, 2));
-    console.log('Origin coordinates:', origin);
-    console.log('Destination coordinates:', destination);
-
-    // Make the API request
+    // Make the API call with the request body and travel mode
     const response = await fetch(ROUTES_API_URL, {
       method: 'POST',
       headers: {
@@ -75,17 +79,15 @@ export const calculateRoute = async (origin, destination, travelMode, preference
       body: JSON.stringify(requestBody)
     });
 
-    console.log('Response status:', response.status);
-    console.log('Response headers:', response.headers);
-
+    // If the API call isn't successful, throw an error
     if (!response.ok) {
       const errorText = await response.text();
       console.error('Routes API Error Response:', errorText);
       throw new Error(`Routes API error: ${response.status} ${response.statusText} - ${errorText}`);
     }
 
+    // Otherwise, wait for the response to be parsed as JSON and return
     const data = await response.json();
-    console.log('Routes API Response:', data);
     return data;
 
   } catch (error) {
@@ -95,85 +97,26 @@ export const calculateRoute = async (origin, destination, travelMode, preference
 };
 
 /**
- * Decode an encoded polyline string into an array of coordinates
- * This converts the Google-encoded polyline back to lat/lng coordinates for map display
+ * Here we have to decode the returned polyline string from the Routes API into 
+ * an array of coordinates that can be placed on our map panel
  * 
  * @param {string} encodedPolyline - The encoded polyline string from the API
- * @returns {Array} Array of coordinate objects with lat/lng properties
+ * @returns {Array} - Array of coordinate objects with lat/lng properties
  */
 export const decodePolyline = (encodedPolyline) => {
-  console.log('Decoding polyline:', encodedPolyline);
-  
-  const poly = [];
-  let index = 0, len = encodedPolyline.length;
-  let lat = 0, lng = 0;
-
-  while (index < len) {
-    let shift = 0, result = 0;
-
-    do {
-      let b = encodedPolyline.charCodeAt(index++) - 63;
-      result |= (b & 0x1f) << shift;
-      shift += 5;
-    } while (result >= 0x20);
-
-    let dlat = ((result & 1) ? ~(result >> 1) : (result >> 1));
-    lat += dlat;
-
-    shift = 0;
-    result = 0;
-
-    do {
-      let b = encodedPolyline.charCodeAt(index++) - 63;
-      result |= (b & 0x1f) << shift;
-      shift += 5;
-    } while (result >= 0x20);
-
-    let dlng = ((result & 1) ? ~(result >> 1) : (result >> 1));
-    lng += dlng;
-
-    poly.push({
-      lat: lat / 1e5,
-      lng: lng / 1e5
-    });
+  if (!encodedPolyline) {
+    return [];
   }
+  
+  // Decode the polyline string into an array of coordinate objects, then
+  // itterate through these to extract the lat/lng values for use in the map panel
+  const decodedPoints = decode(encodedPolyline);
+  const coordinates = decodedPoints.map(point => ({
+    lat: point[0],
+    lng: point[1]
+  }));
 
-  console.log('Decoded coordinates:', poly);
-  return poly;
+  return coordinates;
 };
 
-/**
- * Format duration string from API response
- * Converts duration like "165s" to a human-readable format
- * 
- * @param {string} duration - Duration string from API (e.g., "165s")
- * @returns {string} Formatted duration (e.g., "2 min 45 sec")
- */
-export const formatDuration = (duration) => {
-  const seconds = parseInt(duration.replace('s', ''));
-  const minutes = Math.floor(seconds / 60);
-  const remainingSeconds = seconds % 60;
-  
-  if (minutes === 0) {
-    return `${remainingSeconds} sec`;
-  } else if (remainingSeconds === 0) {
-    return `${minutes} min`;
-  } else {
-    return `${minutes} min ${remainingSeconds} sec`;
-  }
-};
-
-/**
- * Format distance from meters to human-readable format
- * 
- * @param {number} distanceMeters - Distance in meters
- * @returns {string} Formatted distance (e.g., "0.8 km" or "500 m")
- */
-export const formatDistance = (distanceMeters) => {
-  if (distanceMeters < 1000) {
-    return `${distanceMeters} m`;
-  } else {
-    const kilometers = (distanceMeters / 1000).toFixed(1);
-    return `${kilometers} km`;
-  }
-}; 
+ 
