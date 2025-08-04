@@ -43,6 +43,7 @@ vi.mock('../src/Components/EventSearch/EventSearch.jsx', () => {
     }
 })
 
+// EventSearch test suite
 describe('EventSearch tests', () => {
 
     // Show Event Search after submitting location

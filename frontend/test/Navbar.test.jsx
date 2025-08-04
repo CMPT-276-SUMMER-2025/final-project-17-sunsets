@@ -23,7 +23,7 @@ vi.mock('../src/Components/Navbar/Navbar.jsx', () => {
     }
 })
 
-// Create suite for navbar testing
+// Navbar teste suite
 describe('Navbar tests', () => {
 
     // Check if search field input changes

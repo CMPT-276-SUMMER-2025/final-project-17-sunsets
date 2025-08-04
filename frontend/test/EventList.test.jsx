@@ -1,7 +1,217 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import App from '../src/App'
 import { describe, it, expect, vi } from 'vitest'
+import EventList from '../src/Components/EventList/EventList'
+import '@testing-library/jest-dom/vitest'
 
+// Mock Ticketmaster API
+vi.mock('../src/services/ticketmasterApi', () => ({
+    fetchEvents: vi.fn()
+}))
+
+// Import mocked API
+import { fetchEvents } from '../src/services/ticketmasterApi'
+
+// EventList test suite
+describe('EventList tests', () => {
+    // Mock data for events
+    const mockEvents = [
+        {
+            id: '1',
+            title: 'Concert',
+            dateTime: '2025-07-01T18:00:00',
+            location: 'Burnaby',
+            description: 'Not a real concert',
+            organizer: 'No one',
+            category: 'music',
+            priceRange: { min: 50, max: 90 },
+            url: 'www.notarealwebsite.com/tickets/1'
+        },
+        {
+            id: '2',
+            title: 'Basketball Game',
+            dateTime: '2025-08-01T18:00:00',
+            location: 'Vancouver',
+            description: 'Not a real game',
+            organizer: 'No one',
+            category: 'sports',
+            priceRange: { min: 110, max: 150 },
+            url: 'www.notarealwebsite.com/tickets/2'
+        },
+        {
+            id: '3',
+            title: 'Comedy Show',
+            dateTime: '2025-010-01T18:00:00',
+            location: 'Vancouver',
+            description: 'Not a real show',
+            organizer: 'No one',
+            category: 'comedy',
+            priceRange: { min: 20, max: 50 },
+            url: 'www.notarealwebsite.com/tickets/3'
+        }
+    ]
+
+    // Reset mocks before each test
+    beforeEach(() => {
+        vi.resetAllMocks()
+    })
+
+    // Check if events have correct category
+    it('Display events with correct category', async () => {
+        // Return filtered events
+        fetchEvents.mockResolvedValue(mockEvents.filter(event => event.category === 'music'))
+
+        // Render event list with search params for music
+        render(
+            <EventList
+                searchParams = {{
+                    location: 'Burnaby',
+                    keywords: 'music',
+                    eventCount: 10,
+                    radius: 100,
+                    startDate: '2024-06-20',
+                    endDate: '2024-07-10',
+                    priceMin: 0,
+                    priceMax: 1000
+                }}
+            />
+        )
+
+        // Check that only music events are displayed
+        await waitFor(() => {
+            expect(screen.getByText('Concert')).toBeInTheDocument()
+            expect(screen.queryByText('Basketball Game')).not.toBeInTheDocument()
+            expect(screen.queryByText('Comedy Show')).not.toBeInTheDocument()
+        })
+    })
+
+    // Check if events are within search radius
+    it('Display events within search radius', async () => {
+        // Return filtered events
+        fetchEvents.mockResolvedValue(mockEvents)
+
+        render(
+            <EventList
+                searchParams = {{
+                    location: 'Vancouver',
+                    keywords: '',
+                    eventCount: 10,
+                    radius: 50,
+                    startDate: '',
+                    endDate: '',
+                    priceMin: 0,
+                    priceMax: 1000
+                }}
+            />
+        )
+
+        // Check that events are within 50 km
+        await waitFor(() => {
+            expect(fetchEvents).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    radius: 50
+                })
+            )
+        })
+    })
+
+    // Check if events are within the date range
+    it('Display events within the date range', async () => {
+        // Return filtered events
+        const filteredEvents = mockEvents.filter(event => 
+            new Date(event.dateTime) >= new Date('2025-07-01') && 
+            new Date(event.dateTime) <= new Date('2025-09-01')
+        )
+        fetchEvents.mockResolvedValue(filteredEvents)
+
+        render(
+            <EventList
+                searchParams = {{
+                    location: 'Burnaby',
+                    keywords: '',
+                    eventCount: 10,
+                    radius: 100,
+                    startDate: '2025-07-01',
+                    endDate: '2025-09-01',
+                    priceMin: 0,
+                    priceMax: 1000
+                }}
+            />
+        )
+
+        // Check if events are in July/August 2025
+        await waitFor(() => {
+            expect(screen.getByText('Concert')).toBeInTheDocument()
+            expect(screen.getByText('Basketball Game')).toBeInTheDocument()
+            expect(screen.queryByText('Comedy Show')).not.toBeInTheDocument()
+        })
+    })
+
+    // Check if events are within price range
+    it('Displays events within the price range', async () => {
+        // Return filtered events
+        fetchEvents.mockResolvedValue(
+            mockEvents.filter(event => {
+                if (!event.priceRange) return true // Free
+                return event.priceRange.max <= 100
+            })
+        )
+
+        render(
+            <EventList
+                searchParams = {{
+                    location: 'Vancouver',
+                    keywords: '',
+                    eventCount: 10,
+                    radius: 100,
+                    startDate: '',
+                    endDate: '',
+                    priceMin: 0,
+                    priceMax: 100
+                }}
+            />
+        )
+
+        // Check if events are under $100
+        await waitFor(() => {
+            expect(screen.getByText('Concert')).toBeInTheDocument()
+            expect(screen.queryByText('Basketball Game')).not.toBeInTheDocument()
+            expect(screen.getByText('Comedy Show')).toBeInTheDocument()
+        })
+    })
+
+    // Check if correct number of cards are displayed
+    it('Displays correct number of event cards', async () => {
+        //Return filtered events
+        fetchEvents.mockResolvedValue(mockEvents.slice(0, 1))
+
+        render(
+            <EventList
+                searchParams = {{
+                    location: 'Vancouver',
+                    keywords: '',
+                    eventCount: 1,
+                    radius: 100,
+                    startDate: '',
+                    endDate: '',
+                    priceMin: 0,
+                    priceMax: 1000
+                }}
+            />
+        )
+
+        // Check only 1 event is displayed
+        await waitFor(() => {
+            expect(screen.getByText('Concert')).toBeInTheDocument()
+            expect(screen.queryByText('Basketball Game')).not.toBeInTheDocument()
+            expect(screen.queryByText('Comedy Show')).not.toBeInTheDocument()
+            expect(screen.getByText('Found 1 event near Vancouver')).toBeInTheDocument()
+              
+        })
+    })
+})
+
+/*
 // Mock navbar
 vi.mock('../src/Components/Navbar/Navbar.jsx', () => {
     const MockNavbar = ({ onLocationChange, onLocationSubmit }) => (
@@ -32,7 +242,7 @@ vi.mock('../src/Components/EventSearch/EventSearch.jsx', () => {
         >
         <button
             data-testid="search-submit"
-            onClick={() => onSearch({ location: "Vancouver", eventCount: 5 })}
+            onClick={() => onSearch({ location: "Vancouver", eventCount: 5 })}  
         >
             Search Events
         </button>
@@ -43,6 +253,7 @@ vi.mock('../src/Components/EventSearch/EventSearch.jsx', () => {
     }
 })
 
+// Mock EventList
 vi.mock('../src/Components/EventList/EventList.jsx', () => {
     const MockEventList = ({ searchParams, handleBackToSearch }) => (
         <div data-testid="event-list">
@@ -53,12 +264,6 @@ vi.mock('../src/Components/EventList/EventList.jsx', () => {
                             <div key={i} data-testid="event-card">Event {i+1}</div>
                         ))}
                     </div>
-                    <button 
-                        data-testid="mock-back-button"
-                        onClick={handleBackToSearch}
-                    >
-                        ← Back to Search
-                    </button>
                 </>
             )}
         </div>
@@ -68,6 +273,7 @@ vi.mock('../src/Components/EventList/EventList.jsx', () => {
     }
 })
 
+// EventList test suite
 describe('EventList tests', () => {
 
     // Show EventList with correct number of events
@@ -85,14 +291,10 @@ describe('EventList tests', () => {
         })
     })
 
-    /* TO DO */
+    // Check price range filtering
+    it('Correctly filters events by price range', async () => {
 
-    // Show EventList with correct price ranges
-
-    // Show EventList with correct distance
-
-    // Show EventList with correct category of events
-
-    // Check if back button works
+    })
 
 })
+*/
