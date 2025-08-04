@@ -1,0 +1,298 @@
+/* Basic route input styling (feel free to stylize further to your liking) */
+.route-input {
+  width: 100%;
+  color: #fff;
+}
+
+.route-header {
+  margin-bottom: 2rem;
+}
+
+.route-header h2 {
+  margin: 0 0 1rem 0;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.selected-event {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.selected-event h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.selected-event p {
+  margin: 0.25rem 0;
+  color: #ccc;
+  font-size: 0.9rem;
+}
+
+.route-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.input-group label {
+  font-weight: 600;
+  color: #fff;
+  font-size: 0.9rem;
+}
+
+.input-group input {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  padding: 0.75rem;
+  color: #fff;
+  font-size: 1rem;
+}
+
+.input-group input:focus {
+  outline: none;
+  border-color: #b46cff;
+}
+
+.input-group input.error {
+  border-color: #e0527d;
+}
+
+.input-button-row {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+}
+
+.input-button-row input {
+  flex: 1;
+  min-width: 0; /* Prevents flex item from overflowing */
+}
+
+.input-button-row .geolocation-button {
+  flex-shrink: 0; /* Prevents button from shrinking */
+  white-space: nowrap; /* Keeps button text on one line */
+}
+
+.transit-mode-buttons {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.transit-mode-button {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  flex: 1;
+  min-width: 0;
+}
+
+.transit-mode-button:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.transit-mode-button.active {
+  background: #4a90e2;
+  border-color: #4a90e2;
+  color: white;
+}
+
+.transit-mode-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.transit-preferences {
+  margin-top: 0.15rem;
+}
+
+.transit-preferences .preference-button {
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  margin-right: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.transit-preferences .preference-button:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.transit-preferences .preference-button.active {
+  background: #4a90e2;
+  border-color: #4a90e2;
+  color: white;
+}
+
+.bicycle-preference-buttons {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.bicycle-type-buttons {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.bicycle-type-buttons .preference-button {
+  flex: 1;
+}
+
+.error-message {
+  color: #e0527d;
+  font-size: 0.85rem;
+  margin: 0.25rem 0 0 0;
+}
+
+.location-options {
+  display: flex;
+  justify-content: center;
+}
+
+.geolocation-button {
+  background: #4a90e2;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.geolocation-button:hover {
+  background: #3a7bc8;
+}
+
+.geolocation-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Basic testing display - minimal styling */
+.testing-display {
+  background: rgba(255, 193, 7, 0.1);
+  border: 1px solid rgba(255, 193, 7, 0.3);
+  border-radius: 8px;
+  padding: 1rem;
+  margin: 1rem 0;
+}
+
+.testing-display h4 {
+  margin: 0 0 0.5rem 0;
+  color: #ffc107;
+  font-size: 0.9rem;
+}
+
+.testing-display p {
+  margin: 0.25rem 0;
+  color: #fff;
+  font-size: 0.85rem;
+}
+
+.testing-display strong {
+  color: #ffc107;
+}
+
+.route-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.calculate-route-button {
+  background: #b46cff;
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 12px;
+  font-size: 1rem;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.calculate-route-button:hover {
+  background: #9d5cd9;
+}
+
+.calculate-route-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.google-maps-button {
+  background: #34a853;
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 12px;
+  font-size: 1rem;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.google-maps-button:hover {
+  background: #2d8f47;
+}
+
+.google-maps-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.route-results {
+  background: rgba(74, 144, 226, 0.1);
+  border: 1px solid rgba(74, 144, 226, 0.3);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-top: 1rem;
+}
+
+.route-results h3 {
+  margin: 0 0 1rem 0;
+  color: #4a90e2;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.route-info p {
+  margin: 0.5rem 0;
+  color: #fff;
+  font-size: 0.9rem;
+}
+
+.route-info strong {
+  color: #4a90e2;
+} 

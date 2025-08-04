@@ -1,5 +1,5 @@
 // React hooks for managing component state and side effects
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 // Import custom EventCard component to display individual events
 import EventCard from '../EventCard/EventCard';
 // Import API service function to fetch real events from Ticketmaster
@@ -23,8 +23,9 @@ import './EventList.css';
  * @param {number} searchParams.priceMin - Minimum ticket price in CAD
  * @param {number} searchParams.priceMax - Maximum ticket price in CAD
  * @param {Function} onEventsUpdate - Callback function called when events are successfully fetched
+ * @param {Function} onRouteRequest - Callback function called when route button is clicked on an event
  */
-const EventList = ({ searchParams, onEventsUpdate }) => {
+const EventList = ({ searchParams, onEventsUpdate, onRouteRequest }) => {
   // State variables to track what's happening
   
   // The list of events we get back from the API endpoint
@@ -44,7 +45,7 @@ const EventList = ({ searchParams, onEventsUpdate }) => {
    * 
    * @param {Object} params - The search parameters to send to the API
    */
-  const fetchEventsData = async (params) => {
+  const fetchEventsData = useCallback(async (params) => {
     // Show loading spinner animation (without this, users may not know if the app is working)
     setLoading(true);
     
@@ -73,7 +74,7 @@ const EventList = ({ searchParams, onEventsUpdate }) => {
       // Always hide loading spinner, whether the API call was successful or not
       setLoading(false);
     }
-  };
+  }, [onEventsUpdate]);
 
   /**
    * useEffect Hook - React's way of handling side effects
@@ -89,7 +90,7 @@ const EventList = ({ searchParams, onEventsUpdate }) => {
     if (searchParams) {
       fetchEventsData(searchParams);
     }
-  }, [searchParams]);
+  }, [searchParams, fetchEventsData]);
 
   // Display different content based on what's happening
   
@@ -156,7 +157,11 @@ const EventList = ({ searchParams, onEventsUpdate }) => {
           The 'key' prop helps React efficiently update the list when data changes
         */}
         {events.map(event => (
-          <EventCard key={event.id} event={event} />
+          <EventCard 
+            key={event.id} 
+            event={event} 
+            onRouteRequest={onRouteRequest}
+          />
         ))}
       </div>
     </div>
