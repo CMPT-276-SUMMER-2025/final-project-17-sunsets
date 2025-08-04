@@ -13,20 +13,32 @@ function App() {
   const [locationSubmitted, setLocationSubmitted] = useState(false); // Tracks if user submitted location
   const [submittedLocation, setSubmittedLocation] = useState(''); // Location that was actually submitted
   const [events, setEvents] = useState([]); // Store events for map markers
+  const [previousSearchData, setPreviousSearchData] = useState(null); // Store previous search form data
 
   // When user submits search form, switch to results view
   const handleSearch = (params) => {
     setSearchParams(params);
     setShowSearch(false);
+    // Store the search data for when user goes back to search
+    setPreviousSearchData({
+      eventCount: params.eventCount,
+      radius: params.radius,
+      startDate: params.startDate,
+      endDate: params.endDate,
+      priceMin: params.priceMin,
+      priceMax: params.priceMax,
+      category: params.keywords
+    });
     // Clear existing events when new search is performed
     setEvents([]);
   };
 
-  // Back button handler - return to search form and clear previous results
+  // Back button handler - return to search form and preserve previous search data
   const handleBackToSearch = () => {
     setShowSearch(true);
     setSearchParams(null);
     setEvents([]); // Clear events when going back to search
+    // Don't reset locationSubmitted - keep the location active
   };
 
   // Update location as user types (for real-time feedback)
@@ -39,6 +51,13 @@ function App() {
     setCurrentLocation(location);
     setLocationSubmitted(true);
     setSubmittedLocation(location); // Store the location that was submitted for geocoding
+    
+    // Clear previous search results and show search form for new location
+    setSearchParams(null);
+    setShowSearch(true);
+    setEvents([]); // Clear existing events
+    // Clear previous search data when changing location
+    setPreviousSearchData(null);
   };
 
   // Update events when EventList fetches them
@@ -67,6 +86,7 @@ function App() {
               onSearch={handleSearch} 
               currentLocation={currentLocation}
               isVisible={locationSubmitted}
+              previousSearchData={previousSearchData}
             />
           ) : (
             // Show results with back button after search

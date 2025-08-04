@@ -7,5 +7,10 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'jsdom'
+  },
+  preview: {
+    port: process.env.PORT,
+    host: true,
+    allowedHosts: ['metropolive.onrender.com']
   }
 })
