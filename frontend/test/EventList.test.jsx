@@ -42,7 +42,7 @@ describe('EventList tests', () => {
             id: '3',
             title: 'Comedy Show',
             dateTime: '2025-010-01T18:00:00',
-            location: 'Surrey',
+            location: 'Vancouver',
             description: 'Not a real show',
             organizer: 'No one',
             category: 'comedy',
@@ -177,6 +177,36 @@ describe('EventList tests', () => {
             expect(screen.getByText('Concert')).toBeInTheDocument()
             expect(screen.queryByText('Basketball Game')).not.toBeInTheDocument()
             expect(screen.getByText('Comedy Show')).toBeInTheDocument()
+        })
+    })
+
+    // Check if correct number of cards are displayed
+    it('Displays correct number of event cards', async () => {
+        //Return filtered events
+        fetchEvents.mockResolvedValue(mockEvents.slice(0, 1))
+
+        render(
+            <EventList
+                searchParams = {{
+                    location: 'Vancouver',
+                    keywords: '',
+                    eventCount: 1,
+                    radius: 100,
+                    startDate: '',
+                    endDate: '',
+                    priceMin: 0,
+                    priceMax: 1000
+                }}
+            />
+        )
+
+        // Check only 1 event is displayed
+        await waitFor(() => {
+            expect(screen.getByText('Concert')).toBeInTheDocument()
+            expect(screen.queryByText('Basketball Game')).not.toBeInTheDocument()
+            expect(screen.queryByText('Comedy Show')).not.toBeInTheDocument()
+            expect(screen.getByText('Found 1 event near Vancouver')).toBeInTheDocument()
+              
         })
     })
 })
