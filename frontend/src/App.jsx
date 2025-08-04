@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import Navbar from './Components/Navbar/Navbar'
 import EventSearch from './Components/EventSearch/EventSearch'
 import EventList from './Components/EventList/EventList'
@@ -34,6 +34,11 @@ function App() {
   const [submittedLocation, setSubmittedLocation] = useState(''); // Location that was actually submitted
   const [events, setEvents] = useState([]); // Store events for map markers
   const [previousSearchData, setPreviousSearchData] = useState(null); // Store previous search form data
+  
+  // Route-related state variables
+  const [isRouteMode, setIsRouteMode] = useState(false); // Controls when to show route input
+  const [selectedEvent, setSelectedEvent] = useState(null); // Event user wants to route to
+  const [currentRoute, setCurrentRoute] = useState(null); // Store calculated route data
 
   // When user submits search form, switch to results view
   const handleSearch = (params) => {
@@ -83,30 +88,30 @@ function App() {
   };
 
   // Update events when EventList fetches them
-  const handleEventsUpdate = (newEvents) => {
+  const handleEventsUpdate = useCallback((newEvents) => {
     setEvents(newEvents);
-  };
+  }, []);
 
   // Handle route button click from event card
-  const handleRouteRequest = (event) => {
+  const handleRouteRequest = useCallback((event) => {
     setSelectedEvent(event);
     setIsRouteMode(true);
     setShowSearch(false); // Hide search form
-  };
+  }, []);
 
   // Handle back from route mode
-  const handleBackFromRoute = () => {
+  const handleBackFromRoute = useCallback(() => {
     setIsRouteMode(false);
     setSelectedEvent(null);
     setCurrentRoute(null); // Clear route data when exiting route mode
     // Return to event list view
     setShowSearch(false);
-  };
+  }, []);
 
   // Handle route calculation results from RouteInput
-  const handleRouteCalculated = (routeData) => {
+  const handleRouteCalculated = useCallback((routeData) => {
     setCurrentRoute(routeData);
-  };
+  }, []);
 
   return (
     <div className="app">

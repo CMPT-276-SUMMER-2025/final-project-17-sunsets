@@ -1,5 +1,5 @@
 // React hooks for managing component state and side effects
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 // Import custom EventCard component to display individual events
 import EventCard from '../EventCard/EventCard';
 // Import API service function to fetch real events from Ticketmaster
@@ -45,7 +45,7 @@ const EventList = ({ searchParams, onEventsUpdate, onRouteRequest }) => {
    * 
    * @param {Object} params - The search parameters to send to the API
    */
-  const fetchEventsData = async (params) => {
+  const fetchEventsData = useCallback(async (params) => {
     // Show loading spinner animation (without this, users may not know if the app is working)
     setLoading(true);
     
@@ -74,7 +74,7 @@ const EventList = ({ searchParams, onEventsUpdate, onRouteRequest }) => {
       // Always hide loading spinner, whether the API call was successful or not
       setLoading(false);
     }
-  };
+  }, [onEventsUpdate]);
 
   /**
    * useEffect Hook - React's way of handling side effects
@@ -90,7 +90,7 @@ const EventList = ({ searchParams, onEventsUpdate, onRouteRequest }) => {
     if (searchParams) {
       fetchEventsData(searchParams);
     }
-  }, [searchParams]);
+  }, [searchParams, fetchEventsData]);
 
   // Display different content based on what's happening
   
