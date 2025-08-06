@@ -124,10 +124,11 @@
 
 /* Logo styling */
 .navbar-logo {
-  height: 32px;
+  height: 48px; 
   width: auto;
   margin-right: 0.75rem;
   vertical-align: middle;
+  border-radius: 10px;
 }
 
 .navbar-title {

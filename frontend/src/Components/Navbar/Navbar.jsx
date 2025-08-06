@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import './Navbar.css';
 // Import the logo
-import logo from '../../assets/MetropoLive.jpg';
+import logo from '../../assets/MetropoLive.png';
 
 /**
  * Navbar Component
