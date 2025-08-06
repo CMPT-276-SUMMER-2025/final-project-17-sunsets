@@ -74,7 +74,7 @@ export const calculateRoute = async (origin, destination, travelMode) => {
       headers: {
         'Content-Type': 'application/json',
         'X-Goog-Api-Key': API_KEY,
-        'X-Goog-FieldMask': 'routes.duration,routes.distanceMeters,routes.polyline.encodedPolyline'
+        'X-Goog-FieldMask': 'routes.duration,routes.distanceMeters,routes.polyline.encodedPolyline,routes.legs.steps.navigationInstruction,routes.legs.steps.distanceMeters'
       },
       body: JSON.stringify(requestBody)
     });
@@ -88,6 +88,7 @@ export const calculateRoute = async (origin, destination, travelMode) => {
 
     // Otherwise, wait for the response to be parsed as JSON and return
     const data = await response.json();
+    console.log('Routes API response:', data); // Debug log
     return data;
 
   } catch (error) {
