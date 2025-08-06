@@ -229,7 +229,7 @@
   display: flex;
   justify-content: center;
   gap: 1rem;
-  margin-top: 1rem;
+  margin-top: 0.2rem;
 }
 
 .calculate-route-button {
