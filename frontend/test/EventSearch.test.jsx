@@ -26,7 +26,7 @@ vi.mock('../src/Components/Navbar/Navbar.jsx', () => {
 
 // Mock EventSearch
 vi.mock('../src/Components/EventSearch/EventSearch.jsx', () => {
-    const MockEventSearch = ({ onSearch, isVisible, previousSearchData }) => (
+    const MockEventSearch = ({ onSearch, isVisible }) => (
         <div 
             data-testid="event-search" 
             style={{ display: isVisible ? 'block' : 'none' }}
@@ -35,43 +35,36 @@ vi.mock('../src/Components/EventSearch/EventSearch.jsx', () => {
                 <input
                     data-testid="category-input"
                     name="category"
-                    defaultValue={previousSearchData?.category || ''}
                 />
                 <input
                     data-testid="radius-input"
                     name="radius"
                     type="number"
-                    defaultValue={previousSearchData?.radius || 80}
                 />
                 <input
                     data-testid="start-date-input"
                     name="startDate"
                     type="date"
-                    defaultValue={previousSearchData?.startDate || ''}
                 />
                 <input
                     data-testid="end-date-input"
                     name="endDate"
                     type="date"
-                    defaultValue={previousSearchData?.endDate || ''}
                 />
                 <input
                     data-testid="price-min-input"
                     name="priceMin"
                     type="number"
-                    defaultValue={previousSearchData?.priceMin || ''}
                 />
                 <input
                     data-testid="price-max-input"
                     name="priceMax"
                     type="number"
-                    defaultValue={previousSearchData?.priceMax || ''}
                 />
                 <input
                     data-testid="event-count-input"
                     name="eventCount"
                     type="number"
-                    defaultValue={previousSearchData?.startDate || 10}
                 />
                 <button
                     data-testid="search-submit"
