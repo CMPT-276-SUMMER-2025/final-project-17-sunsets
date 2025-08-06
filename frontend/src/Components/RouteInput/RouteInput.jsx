@@ -1,6 +1,7 @@
 import { useState } from 'react';
 // These are the core functions that handle polyline (route) calculation and display returnd from Routes API
 import { calculateRoute, decodePolyline } from '../../services/routesApi';
+import Directions from '../Directions/Directions'; // Directions component for displaying nav instructions
 import './RouteInput.css';
 
 /**
@@ -24,6 +25,8 @@ import './RouteInput.css';
  * - Geolocation with progressive accuracy enhancement (i.e., we basically increase wait times for sat data to return)
  * - Transit mode selection (WALK, TRANSIT, DRIVE, BICYCLE)
  * - Error handling for location services and address input (this needs improvement following QA testing)
+ * - Route calculation using Google Routes API
+ * - Directions display using Directions component
  * 
  * @param {Object} selectedEvent - The event the user wants to route to
  * @param {Function} onBack - Callback to return to event list
@@ -38,11 +41,10 @@ const RouteInput = ({ selectedEvent, onBack, onRouteCalculated }) => {
   const [selectedTransitMode, setSelectedTransitMode] = useState('TRANSIT'); // Default to TRANSIT
   const [userCoordinates, setUserCoordinates] = useState(null); // Store raw GPS coordinates
 
-
-
   // Route calculation states
   const [isCalculatingRoute, setIsCalculatingRoute] = useState(false);
   const [routeError, setRouteError] = useState('');
+  const [routeData, setRouteData] = useState(null);
 
   /**
    * Convert the API date format to something readable
@@ -78,6 +80,8 @@ const RouteInput = ({ selectedEvent, onBack, onRouteCalculated }) => {
     setLocationError(''); // Clear any previous errors
     // Clear stored coordinates when user manually types an address
     setUserCoordinates(null);
+    // Clear previous route data when user changes address
+    setRouteData(null);
   };
 
   // Handle transit mode selection
@@ -85,6 +89,8 @@ const RouteInput = ({ selectedEvent, onBack, onRouteCalculated }) => {
   // the user selects for their route
   const handleTransitModeChange = (mode) => {
     setSelectedTransitMode(mode);
+    // Clear previous route data when user changes transit mode
+    setRouteData(null);
   };
 
 
@@ -317,9 +323,11 @@ const RouteInput = ({ selectedEvent, onBack, onRouteCalculated }) => {
         eventLocation,
         selectedTransitMode
       );
+      
+      console.log('Route response:', routeResponse); // Debug log
 
              if (routeResponse.routes && routeResponse.routes.length > 0) {
-         const route = routeResponse.routes[0];
+         const route = routeResponse.routes[0]; // Get the first (and only) route from the response
          
          // Decode the polyline for map display
          const routeCoordinates = decodePolyline(route.polyline.encodedPolyline);
@@ -329,11 +337,15 @@ const RouteInput = ({ selectedEvent, onBack, onRouteCalculated }) => {
            coordinates: routeCoordinates
          };
 
+         // Store the full route data for directions display
+         setRouteData(routeResponse);
+
          // Pass route data to parent component for polyline display
          if (onRouteCalculated) {
            onRouteCalculated(routeData);
          }
       } else {
+        console.log('No routes found in response:', routeResponse); // Debug log
         setRouteError('No route found. Please try different preferences or locations.');
       }
 
@@ -443,6 +455,14 @@ const RouteInput = ({ selectedEvent, onBack, onRouteCalculated }) => {
         {/* Display route calculation errors */}
         {routeError && <p className="error-message">{routeError}</p>}
       </div>
+
+      {/* Display step-by-step directions */}
+      {routeData && (
+        <Directions 
+          routeData={routeData} 
+          travelMode={selectedTransitMode} 
+        />
+      )}
     </div>
   );
 };
