@@ -6,16 +6,16 @@ import { describe, it, expect, vi } from 'vitest'
 vi.mock('../src/Components/Navbar/Navbar.jsx', () => {
     const MockNavbar = ({ onLocationChange, onLocationSubmit }) => (
         <div>
-        <input 
-            data-testid="location-input"
-            onChange={(e) => onLocationChange(e.target.value)}
-        />
-        <button 
-            data-testid="location-submit"
-            onClick={() => onLocationSubmit("Vancouver")}
-        >
-            Submit Location
-        </button>
+            <input 
+                data-testid="location-input"
+                onChange={(e) => onLocationChange(e.target.value)}
+            />
+            <button 
+                data-testid="location-submit"
+                onClick={() => onLocationSubmit("Vancouver")}
+            >
+                Submit Location
+            </button>
         </div>
     )
     return {
