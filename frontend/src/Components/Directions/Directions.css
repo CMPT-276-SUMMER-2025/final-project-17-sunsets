@@ -1,0 +1,165 @@
+.directions-container {
+  margin-top: 20px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.directions-header {
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.directions-header h3 {
+  margin: 0 0 10px 0;
+  color: #fff;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.route-summary {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.summary-item {
+  font-size: 0.9rem;
+  color: #ccc;
+}
+
+.summary-item strong {
+  color: #fff;
+}
+
+.directions-list {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.direction-step {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 15px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  border-left: 4px solid #4a90e2;
+  transition: background-color 0.2s ease;
+}
+
+.direction-step:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.step-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: #4a90e2;
+  color: white;
+  border-radius: 50%;
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+
+.step-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.step-instruction {
+  font-size: 0.95rem;
+  color: #fff;
+  margin-bottom: 5px;
+  line-height: 1.4;
+}
+
+.step-details {
+  display: flex;
+  gap: 15px;
+  font-size: 0.8rem;
+  color: #ccc;
+}
+
+.step-distance,
+.step-duration {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.step-distance::before {
+  content: "📏";
+  font-size: 0.7rem;
+}
+
+.step-duration::before {
+  content: "⏱️";
+  font-size: 0.7rem;
+}
+
+.no-directions {
+  text-align: center;
+  padding: 20px;
+  color: #ccc;
+  font-style: italic;
+}
+
+.no-directions p {
+  margin: 5px 0;
+}
+
+/* Scrollbar styling for the directions list */
+.directions-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.directions-list::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.directions-list::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.directions-list::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .directions-container {
+    padding: 15px;
+    margin-top: 15px;
+  }
+  
+  .route-summary {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .step-details {
+    flex-direction: column;
+    gap: 5px;
+  }
+  
+  .direction-step {
+    padding: 10px;
+  }
+  
+  .step-number {
+    width: 24px;
+    height: 24px;
+    font-size: 0.7rem;
+    margin-right: 10px;
+  }
+} 

@@ -20,7 +20,21 @@ vi.mock('../src/services/routesApi', () => ({
             polyline: { encodedPolyline: 'mockPolylineString' },
             duration: '15 mins',
             distanceMeters: 2500,
-            duration: '30 mins'
+            duration: '30 mins',
+            legs: [
+                {
+                    steps: [
+                        {
+                            navigationInstruction: { instructions: 'Head north on Main St' },
+                            distanceMeters: 500
+                        },
+                        {
+                            navigationInstruction: { instructions: 'Turn right onto 1st Ave' },
+                            distanceMeters: 2000
+                        }
+                    ]
+                }
+            ]
         }]
     })),
     decodePolyline: vi.fn(() => [
@@ -122,7 +136,21 @@ describe('RouteInput tests', () => {
                         encodedPolyline: 'mockEncodedString'
                     },
                     distanceMeters: 2500,
-                    duration: '30 mins'
+                    duration: '30 mins',
+                    legs: [
+                        {
+                            steps: [
+                                {
+                                    navigationInstruction: { instructions: 'Head north on Main St' },
+                                    distanceMeters: 500
+                                },
+                                {
+                                    navigationInstruction: { instructions: 'Turn right onto 1st Ave' },
+                                    distanceMeters: 2000
+                                }
+                            ]
+                        }
+                    ]
                 }]
             })
         )

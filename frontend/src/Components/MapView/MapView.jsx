@@ -303,7 +303,7 @@ const MapView = ({ location, submittedLocation, events, currentRoute }) => {
       const routePolyline = new window.google.maps.Polyline({
         path: path,
         geodesic: true, // Makes the line follow Earth's curvature instead of being just a straight line
-        strokeColor: '#4A90E2',
+        strokeColor: '#4A90E2', // Basic dark blue color (not sure what else is better)
         strokeOpacity: 0.9,
         strokeWeight: 5,
         map: mapInstanceRef.current
