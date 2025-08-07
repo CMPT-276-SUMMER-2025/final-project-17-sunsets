@@ -98,11 +98,13 @@ const EventSearch = ({ onSearch, currentLocation, isVisible = false, previousSea
     const { name, value } = e.target;
     
     // Copy all previous state data, then update "name" with the new "value"
-    // If the field is a number, convert the string to a number (parseInt); otherwise, keep the string
+    // For numeric fields, convert to number but keep as string for price fields to avoid precision issues
     setSearchData(prev => ({
       ...prev,
-      [name]: name === 'eventCount' || name === 'radius' || name === 'priceMin' || name === 'priceMax' ? 
-        (value === '' ? '' : parseInt(value)) : value
+      [name]: name === 'eventCount' || name === 'radius' ? 
+        (value === '' ? '' : parseInt(value)) : 
+        name === 'priceMin' || name === 'priceMax' ?
+        (value === '' ? '' : value) : value
     }));
   };
 

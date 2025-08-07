@@ -1,6 +1,9 @@
 // API Configuration - These constants store the Ticketmaster API credentials and endpoint 
-// A proxy server will have to be setup in the future to avoid misuse of the following API key.
-const API_KEY = 'PKGwgs7x66R2cv0x8CydvJAELtiqTxAV';
+// API key from environment variables
+const API_KEY = import.meta.env.VITE_TICKETMASTER_API_KEY;
+
+// Debug: Check if environment variable is loaded
+console.log('Ticketmaster API Key from env:', import.meta.env.VITE_TICKETMASTER_API_KEY);
 const BASE_URL = 'https://app.ticketmaster.com/discovery/v2/events.json';
 
 /**
@@ -43,8 +46,10 @@ const transformEventData = (ticketmasterEvent) => {
     // Extract category from classifications array, default to 'Entertainment'
     category: ticketmasterEvent.classifications?.[0]?.segment?.name || 'Entertainment',
     
-    // Format price range if available, otherwise show 'Price varies'
-    price: priceRange ? `${priceRange.type} ${priceRange.currency}${priceRange.min} - ${priceRange.currency}${priceRange.max}` : 'Price varies',
+         // Format price range if available, otherwise show 'Price varies'
+     price: priceRange ? `${priceRange.type} ${priceRange.currency}${priceRange.min} - ${priceRange.currency}${priceRange.max}` : 'Price varies',
+     // Store price ranges for filtering
+     priceRanges: ticketmasterEvent.priceRanges || [],
     
     // Direct link to buy tickets on Ticketmaster
     url: ticketmasterEvent.url,
@@ -116,18 +121,16 @@ export const fetchEvents = async (searchParams) => {
       params.append('endDateTime', endDateTime);
     }
 
-    // Add price range filtering if user provided prices
-    if (searchParams.priceMin && searchParams.priceMin !== '') {
-      params.append('priceMin', searchParams.priceMin);
-    }
-    
-    if (searchParams.priceMax && searchParams.priceMax !== '') {
-      params.append('priceMax', searchParams.priceMax);
-    }
+    // Note: Price filtering is now handled in a two-step process
+    // First get events, then fetch details for price filtering
+    // We don't send priceMin/priceMax to the search API as it doesn't support them
 
     // Set currency to CAD for Canadian users
     params.append('currency', 'CAD');
 
+    // Debug: Log the API request parameters
+    console.log('Ticketmaster API Request Parameters:', Object.fromEntries(params));
+    
     // Make the actual API request
     const response = await fetch(`${BASE_URL}?${params.toString()}`);
     
@@ -145,7 +148,41 @@ export const fetchEvents = async (searchParams) => {
     }
 
     // Transform each event from Ticketmaster's format to our format
-    const transformedEvents = data._embedded.events.map(transformEventData);
+    let transformedEvents = data._embedded.events.map(transformEventData);
+    
+    // If price filtering is requested, fetch details for each event
+    if ((searchParams.priceMin && searchParams.priceMin !== '') || (searchParams.priceMax && searchParams.priceMax !== '')) {
+      const userMin = searchParams.priceMin ? parseFloat(searchParams.priceMin) : 0;
+      const userMax = searchParams.priceMax ? parseFloat(searchParams.priceMax) : Infinity;
+      
+      console.log(`Filtering events by price range: $${userMin} - $${userMax}`);
+      
+      // Fetch details for each event to get pricing information
+      const eventsWithPricing = await Promise.all(
+        transformedEvents.map(async (event) => {
+          try {
+            const details = await fetchEventDetails(event.id);
+            return {
+              ...event,
+              priceRanges: details.priceRanges || []
+            };
+          } catch (error) {
+            console.warn(`Failed to fetch details for event ${event.id}:`, error);
+            return {
+              ...event,
+              priceRanges: []
+            };
+          }
+        })
+      );
+      
+      // Filter events based on price range
+      transformedEvents = eventsWithPricing.filter(event => 
+        isEventInPriceRange(event.priceRanges, userMin, userMax)
+      );
+      
+      console.log(`Found ${transformedEvents.length} events within price range out of ${eventsWithPricing.length} total events`);
+    }
     
     return transformedEvents;
   } catch (error) {
@@ -155,6 +192,51 @@ export const fetchEvents = async (searchParams) => {
     // Throw a user-friendly error message
     throw new Error('Failed to fetch events. Please check your internet connection and try again.');
   }
+};
+
+/**
+ * Fetch detailed event information including pricing
+ * 
+ * @param {string} eventId - The Ticketmaster event ID
+ * @returns {Promise<Object>} Promise that resolves to detailed event data
+ */
+export const fetchEventDetails = async (eventId) => {
+  try {
+    const response = await fetch(`${BASE_URL.replace('/events.json', '')}/events/${eventId}?apikey=${API_KEY}`);
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching event details:', error);
+    throw new Error('Failed to fetch event details.');
+  }
+};
+
+/**
+ * Check if event pricing falls within the specified range
+ * 
+ * @param {Array} priceRanges - Array of price range objects from API
+ * @param {number} userMin - User's minimum price
+ * @param {number} userMax - User's maximum price
+ * @returns {boolean} True if event has tickets within the price range
+ */
+export const isEventInPriceRange = (priceRanges, userMin, userMax) => {
+  if (!priceRanges || priceRanges.length === 0) {
+    return false; // No pricing info available
+  }
+  
+  // Check if any price range overlaps with user's range
+  return priceRanges.some(range => {
+    const rangeMin = range.min;
+    const rangeMax = range.max;
+    
+    // Check if ranges overlap
+    return rangeMin <= userMax && rangeMax >= userMin;
+  });
 };
 
 // Note: Removed deprecated coordinate-based search functionality

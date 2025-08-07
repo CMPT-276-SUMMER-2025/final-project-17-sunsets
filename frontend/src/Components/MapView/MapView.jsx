@@ -53,7 +53,13 @@ const MapView = ({ location, submittedLocation, events, currentRoute }) => {
       // script.async allows the script to load asynchronously, and 
       // script.defer allows it to load after the page itself has loaded
       const script = document.createElement('script');
-      script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyDzzzTrEwFB6ase7tvNbnEsD562z2MG6vk&libraries=places`;
+      const GOOGLE_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+      
+      // Debug: Check if environment variable is loaded
+      console.log('Google Maps API Key from env:', GOOGLE_API_KEY);
+      console.log('All env variables:', import.meta.env);
+      
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_API_KEY}&libraries=places`;
       script.async = true;
       script.defer = true;
       

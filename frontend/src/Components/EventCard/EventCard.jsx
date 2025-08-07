@@ -71,6 +71,35 @@ const EventCard = ({ event, onRouteRequest }) => {
     });
   };
 
+  /**
+   * Format price ranges in the [minValue------maxValue] format
+   * 
+   * @param {Array} priceRanges - Array of price range objects from API
+   * @returns {string} Formatted price string
+   */
+  const formatPriceRanges = (priceRanges) => {
+    if (!priceRanges || priceRanges.length === 0) {
+      return 'Price varies';
+    }
+    
+    // Find the overall min and max across all price ranges
+    let minPrice = Infinity;
+    let maxPrice = -Infinity;
+    
+    priceRanges.forEach(range => {
+      if (range.min < minPrice) minPrice = range.min;
+      if (range.max > maxPrice) maxPrice = range.max;
+    });
+    
+    // If min and max are the same, show single price
+    if (minPrice === maxPrice) {
+      return `$${minPrice}`;
+    }
+    
+    // Format as [minValue------maxValue]
+    return `[$${minPrice}------$${maxPrice}]`;
+  };
+
   // Render the event card
   return (
     // Add 'expanded' class when card is expanded for styling
@@ -113,12 +142,10 @@ const EventCard = ({ event, onRouteRequest }) => {
             <div className="meta-item">
               <strong>Category:</strong> {event.category}
             </div>
-            {/* Only show price if it exists (prevents "Price: undefined") */}
-            {event.price && (
-              <div className="meta-item">
-                <strong>Price:</strong> {event.price}
-              </div>
-            )}
+            {/* Display formatted price ranges */}
+            <div className="meta-item">
+              <strong>Price:</strong> {formatPriceRanges(event.priceRanges)}
+            </div>
           </div>
 
           {/* Action buttons */}
