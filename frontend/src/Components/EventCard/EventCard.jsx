@@ -71,21 +71,59 @@ const EventCard = ({ event, onRouteRequest }) => {
     });
   };
 
+  /**
+   * Format price ranges to show only minimum price
+   * 
+   * @param {Array} priceRanges - Array of price range objects from API
+   * @returns {string} Formatted price string
+   */
+  const formatPriceRanges = (priceRanges) => {
+    // Debug: Log what priceRanges data we're receiving
+    console.log('formatPriceRanges received:', priceRanges);
+    
+    if (!priceRanges || priceRanges.length === 0) {
+      console.log('No price ranges found, returning "Price varies"');
+      return 'Price varies';
+    }
+    
+    // Find the minimum price across all price ranges
+    let minPrice = Infinity;
+    
+    priceRanges.forEach((range, index) => {
+      console.log(`Price range ${index}:`, range);
+      if (range.min < minPrice) minPrice = range.min;
+    });
+    
+    console.log(`Calculated min: ${minPrice}`);
+    
+    // Return just the minimum price
+    return `$${minPrice}`;
+  };
+
   // Render the event card
   return (
     // Add 'expanded' class when card is expanded for styling
     <div className={`event-card ${isExpanded ? 'expanded' : ''}`}>
       {/* Clickable header that toggles expansion */}
       <div className="event-header" onClick={toggleExpanded}>
-        {/* Event title and formatted date */}
+        {/* Event title centered at top */}
         <div className="event-title">
           <h3>{event.title}</h3>
-          <span className="event-date">{formatDate(event.dateTime)}</span>
         </div>
         
-        {/* Event location with map pin emoji (I thought it was a simple alternative to a custom icon)*/}
-        <div className="event-location">
-          <span>📍 {event.location}</span>
+        {/* Event details spaced evenly below title */}
+        <div className="event-details-summary">
+          <div className="event-date">
+            <span>📅 {formatDate(event.dateTime)}</span>
+          </div>
+          
+          <div className="event-location">
+            <span>📍 {event.location}</span>
+          </div>
+          
+          <div className="event-price">
+            <span>💰 {formatPriceRanges(event.priceRanges)}</span>
+          </div>
         </div>
         
         {/* Expand/collapse icon that changes based on state */}
@@ -113,12 +151,10 @@ const EventCard = ({ event, onRouteRequest }) => {
             <div className="meta-item">
               <strong>Category:</strong> {event.category}
             </div>
-            {/* Only show price if it exists (prevents "Price: undefined") */}
-            {event.price && (
-              <div className="meta-item">
-                <strong>Price:</strong> {event.price}
-              </div>
-            )}
+            {/* Display formatted price ranges */}
+            <div className="meta-item">
+              <strong>Price:</strong> {formatPriceRanges(event.priceRanges)}
+            </div>
           </div>
 
           {/* Action buttons */}

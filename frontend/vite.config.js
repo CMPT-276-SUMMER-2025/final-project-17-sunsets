@@ -12,5 +12,6 @@ export default defineConfig({
     port: process.env.PORT,
     host: true,
     allowedHosts: ['metropolive.onrender.com']
-  }
+  }, 
+  envPrefix: ['VITE_'] // This is the prefix for the environment variables
 })

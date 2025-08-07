@@ -4,6 +4,7 @@ import EventSearch from './Components/EventSearch/EventSearch'
 import EventList from './Components/EventList/EventList'
 import MapView from './Components/MapView/MapView'
 import RouteInput from './Components/RouteInput/RouteInput'
+
 import './App.css'
 
 /**
@@ -159,6 +160,8 @@ function App() {
           )}
         </div>
       </main>
+      
+      
     </div>
   )
 }
