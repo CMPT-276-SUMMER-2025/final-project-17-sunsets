@@ -1,6 +1,10 @@
 name: CI
 
-on: [push, pull_request]
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
 
 jobs:
   test:
@@ -8,16 +12,24 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+
+      - name: Setup Node.js
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
 
       - name: Install dependencies
-        run: cd frontend && npm install --legacy-peer-deps
+        run: |
+          cd frontend
+          npm ci --legacy-peer-deps
 
       - name: Run tests
-        run: cd frontend && npm test
+        run: |
+          cd frontend
+          npm test
 
-      - name: build
-        run: cd frontend && npm run build
+      - name: Build
+        run: |
+          cd frontend
+          npm run build
