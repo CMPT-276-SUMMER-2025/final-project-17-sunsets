@@ -72,32 +72,32 @@ const EventCard = ({ event, onRouteRequest }) => {
   };
 
   /**
-   * Format price ranges in the [minValue------maxValue] format
+   * Format price ranges to show only minimum price
    * 
    * @param {Array} priceRanges - Array of price range objects from API
    * @returns {string} Formatted price string
    */
   const formatPriceRanges = (priceRanges) => {
+    // Debug: Log what priceRanges data we're receiving
+    console.log('formatPriceRanges received:', priceRanges);
+    
     if (!priceRanges || priceRanges.length === 0) {
+      console.log('No price ranges found, returning "Price varies"');
       return 'Price varies';
     }
     
-    // Find the overall min and max across all price ranges
+    // Find the minimum price across all price ranges
     let minPrice = Infinity;
-    let maxPrice = -Infinity;
     
-    priceRanges.forEach(range => {
+    priceRanges.forEach((range, index) => {
+      console.log(`Price range ${index}:`, range);
       if (range.min < minPrice) minPrice = range.min;
-      if (range.max > maxPrice) maxPrice = range.max;
     });
     
-    // If min and max are the same, show single price
-    if (minPrice === maxPrice) {
-      return `$${minPrice}`;
-    }
+    console.log(`Calculated min: ${minPrice}`);
     
-    // Format as [minValue------maxValue]
-    return `[$${minPrice}------$${maxPrice}]`;
+    // Return just the minimum price
+    return `$${minPrice}`;
   };
 
   // Render the event card
@@ -106,15 +106,24 @@ const EventCard = ({ event, onRouteRequest }) => {
     <div className={`event-card ${isExpanded ? 'expanded' : ''}`}>
       {/* Clickable header that toggles expansion */}
       <div className="event-header" onClick={toggleExpanded}>
-        {/* Event title and formatted date */}
+        {/* Event title centered at top */}
         <div className="event-title">
           <h3>{event.title}</h3>
-          <span className="event-date">{formatDate(event.dateTime)}</span>
         </div>
         
-        {/* Event location with map pin emoji (I thought it was a simple alternative to a custom icon)*/}
-        <div className="event-location">
-          <span>📍 {event.location}</span>
+        {/* Event details spaced evenly below title */}
+        <div className="event-details-summary">
+          <div className="event-date">
+            <span>📅 {formatDate(event.dateTime)}</span>
+          </div>
+          
+          <div className="event-location">
+            <span>📍 {event.location}</span>
+          </div>
+          
+          <div className="event-price">
+            <span>💰 {formatPriceRanges(event.priceRanges)}</span>
+          </div>
         </div>
         
         {/* Expand/collapse icon that changes based on state */}
