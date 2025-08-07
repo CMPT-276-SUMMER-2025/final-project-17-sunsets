@@ -225,42 +225,52 @@ const MapView = ({ location, submittedLocation, events, currentRoute }) => {
     markersRef.current = [];
 
     // Add new markers for each event with venue coordinates
+    console.log(`Total events: ${events.length}`);
+    console.log(`Events with venue coordinates: ${events.filter(e => e.venueCoordinates).length}`);
+    
     events.forEach(event => {
-      if (event.venueCoordinates) {
-        const marker = new window.google.maps.Marker({
-          position: event.venueCoordinates,
-          map: mapInstanceRef.current,
-          title: event.title,
-          // The marker color is temporarily blue to contrast with the overall dark theme
-          icon: {
-            path: window.google.maps.SymbolPath.CIRCLE,
-            scale: 8,
-            fillColor: '#4a90e2',
-            fillOpacity: 0.9,
-            strokeColor: '#ffffff',
-            strokeWeight: 2
-          }
-        });
+      // Always geocode the location string to get coordinates for markers
+      const geocoder = new window.google.maps.Geocoder();
+      geocoder.geocode({ address: event.location }, (results, status) => {
+        if (status === 'OK' && results[0]) {
+          const position = results[0].geometry.location;
+          
+          const marker = new window.google.maps.Marker({
+            position: position,
+            map: mapInstanceRef.current,
+            title: event.title,
+            icon: {
+              path: window.google.maps.SymbolPath.CIRCLE,
+              scale: 8,
+              fillColor: '#4a90e2',
+              fillOpacity: 0.9,
+              strokeColor: '#ffffff',
+              strokeWeight: 2
+            }
+          });
 
-        // Add click listener to show event info window
-        const infoWindow = new window.google.maps.InfoWindow({
-          content: `
-            <div style="padding: 8px; max-width: 200px;">
-              <h4 style="margin: 0 0 8px 0; color: #340;">${event.title}</h4>
-              <p style="margin: 0 0 4px 0; color: #650; font-size: 12px;">${event.venueName}</p>
-              <p style="margin: 0 0 4px 0; color: #650; font-size: 12px;">${event.dateTime}</p>
-              <p style="margin: 0; color: #650; font-size: 12px;">${event.price}</p>
-            </div>
-          `
-        });
+          // Add click listener to show event info window
+          const infoWindow = new window.google.maps.InfoWindow({
+            content: `
+              <div style="padding: 8px; max-width: 200px;">
+                <h4 style="margin: 0 0 8px 0; color: #340;">${event.title}</h4>
+                <p style="margin: 0 0 4px 0; color: #650; font-size: 12px;">${event.location}</p>
+                <p style="margin: 0 0 4px 0; color: #650; font-size: 12px;">${event.dateTime}</p>
+                <p style="margin: 0; color: #650; font-size: 12px;">${event.price}</p>
+              </div>
+            `
+          });
 
-        marker.addListener('click', () => {
-          infoWindow.open(mapInstanceRef.current, marker);
-        });
+          marker.addListener('click', () => {
+            infoWindow.open(mapInstanceRef.current, marker);
+          });
 
-        // Store marker reference for later removal
-        markersRef.current.push(marker);
-      }
+          // Store marker reference for later removal
+          markersRef.current.push(marker);
+        } else {
+          console.log(`Failed to geocode location for event: ${event.title} at ${event.location}`);
+        }
+      });
     });
   }, [events]);
 
