@@ -32,7 +32,7 @@ const transformEventData = (ticketmasterEvent, detailedPricing = null) => {
     dateTime: ticketmasterEvent.dates?.start?.dateTime || ticketmasterEvent.dates?.start?.localDate,
     
     // Build location string from venue data, with fallback if venue info is missing
-    location: venue ? `${venue.name}, ${venue.city?.name}, ${venue.state?.stateCode}` : 'Location TBD',
+    location: venue ? `${venue.name}${venue.city?.name ? `, ${venue.city.name}` : ''}${venue.state?.stateCode ? `, ${venue.state.stateCode}` : ''}` : 'Location TBD',
     
     // Use event info if available, otherwise provide default description
     description: ticketmasterEvent.info || 'No description available',
