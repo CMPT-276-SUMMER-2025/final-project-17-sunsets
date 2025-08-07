@@ -114,7 +114,7 @@ describe('RouteInput tests', () => {
     })
 
     // Check if directions are shown
-    it('Show step-by-step directions', async () => {
+    it('Calculate route and show step-by-step directions', async () => {
         routesApi.calculateRoute.mockImplementationOnce(() =>
             Promise.resolve({
                 routes: [{
@@ -143,5 +143,30 @@ describe('RouteInput tests', () => {
         await waitFor(() => {
             expect(mockProps.onRouteCalculated).toHaveBeenCalled()
         })
+    })
+
+    // Test Open in Google Maps button
+    it('Open route in Google Maps', async () => {
+        global.open = vi.fn()
+
+        render(<RouteInput {...mockProps} />)
+        const user = userEvent.setup()
+
+        // Enter address and calculate route first
+        await user.type(screen.getByPlaceholderText(/Enter your address/), '123 My Street, Vancouver')
+        await user.click(screen.getByText('🚗 Driving'))
+        await user.click(screen.getByText('🗺️ Calculate Route & Directions'))
+
+        // Wait for route calculation
+        await waitFor(() => {
+            expect(mockProps.onRouteCalculated).toHaveBeenCalled()
+        })
+
+        // Click Open in Google Maps button
+        await user.click(screen.getByText('🌐 Open in Google Maps'))
+        
+        // Mock Google Maps URL
+        const googleMapsUrl = 'https://www.google.com/maps/dir/?api=1&origin=123%20My%20Street%2C%20Vancouver&destination=Real%20Stadium%2C%20Vancouver&travelmode=driving'
+        expect(global.open).toHaveBeenCalledWith(googleMapsUrl, '_blank')
     })
 })
