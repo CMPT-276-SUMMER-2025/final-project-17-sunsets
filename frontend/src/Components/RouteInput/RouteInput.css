@@ -12,15 +12,29 @@
   margin: 0 0 1rem 0;
   font-size: 1.8rem;
   font-weight: 700;
-  color: #fff;
+  background: linear-gradient(90deg, #6a3d9e 0%, #a03a5a 100%); /* Darker purple to darker pink gradient */
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 6px rgba(106, 61, 158, 0.3)) drop-shadow(0 0 12px rgba(160, 58, 90, 0.15));
 }
 
 .selected-event {
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 12px;
-  padding: 1.5rem;
+  background: #18181a;
+  border-radius: 16px;
+  box-shadow: 0 2px 16px 0 rgba(180, 108, 255, 0.08);
   margin-bottom: 2rem;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+  transition: box-shadow 0.3s, border 0.3s, background 0.3s;
+  border: 2px solid #e0527d;
+  position: relative;
+  padding: 1.5rem;
+}
+
+.selected-event:hover {
+  box-shadow: 0 4px 32px 0 rgba(180, 108, 255, 0.18), 0 0 24px 4px #e0527d44;
+  border: 2px solid #b46cff;
+  background: radial-gradient(circle at 60% 40%, #2a1a2e 0%, #18181a 70%);
 }
 
 .selected-event h3 {
@@ -114,8 +128,8 @@
 }
 
 .transit-mode-button.active {
-  background: #4a90e2;
-  border-color: #4a90e2;
+  background: linear-gradient(90deg, #b46cff 0%, #e0527d 100%); /* Purple to pink gradient */
+  border-color: #b46cff;
   color: white;
 }
 
@@ -180,8 +194,9 @@
   justify-content: center;
 }
 
+/* Update geolocation button to green gradient */
 .geolocation-button {
-  background: #4a90e2;
+  background: linear-gradient(90deg, #28a745 0%, #20c997 100%); /* Green gradient */
   color: white;
   border: none;
   padding: 0.75rem 1.5rem;
@@ -189,15 +204,20 @@
   font-size: 0.9rem;
   cursor: pointer;
   font-weight: 600;
+  transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
 }
 
 .geolocation-button:hover {
-  background: #3a7bc8;
+  background: linear-gradient(90deg, #20c997 0%, #28a745 100%); /* Inverted green gradient */
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(40, 167, 69, 0.4), 0 0 20px rgba(32, 201, 151, 0.3);
 }
 
 .geolocation-button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
 /* Basic testing display - minimal styling */
@@ -232,8 +252,9 @@
   margin-top: 0.2rem;
 }
 
+/* Update action buttons to match theme with glow effects */
 .calculate-route-button {
-  background: #b46cff;
+  background: linear-gradient(90deg, #28a745 0%, #20c997 100%); /* Green gradient */
   color: white;
   border: none;
   padding: 1rem 2rem;
@@ -241,19 +262,24 @@
   font-size: 1rem;
   cursor: pointer;
   font-weight: 600;
+  transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
 }
 
 .calculate-route-button:hover {
-  background: #9d5cd9;
+  background: linear-gradient(90deg, #20c997 0%, #28a745 100%); /* Inverted green gradient */
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(40, 167, 69, 0.4), 0 0 20px rgba(32, 201, 151, 0.3);
 }
 
 .calculate-route-button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
 .google-maps-button {
-  background: #34a853;
+  background: linear-gradient(90deg, #6a3d9e 0%, #a03a5a 100%); /* Darker purple to darker pink gradient */
   color: white;
   border: none;
   padding: 1rem 2rem;
@@ -261,15 +287,20 @@
   font-size: 1rem;
   cursor: pointer;
   font-weight: 600;
+  transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
 }
 
 .google-maps-button:hover {
-  background: #2d8f47;
+  background: linear-gradient(90deg, #a03a5a 0%, #6a3d9e 100%); /* Inverted gradient */
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(106, 61, 158, 0.4), 0 0 20px rgba(160, 58, 90, 0.3);
 }
 
 .google-maps-button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
 .route-results {
