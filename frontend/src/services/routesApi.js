@@ -14,8 +14,6 @@ import { decode } from '@googlemaps/polyline-codec';
 // API key from environment variables
 const API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
-// Debug: Check if environment variable is loaded
-console.log('Routes API Key from env:', import.meta.env.VITE_GOOGLE_MAPS_API_KEY);
 const ROUTES_API_URL = 'https://routes.googleapis.com/directions/v2:computeRoutes';
 
 /**
@@ -91,7 +89,6 @@ export const calculateRoute = async (origin, destination, travelMode) => {
 
     // Otherwise, wait for the response to be parsed as JSON and return
     const data = await response.json();
-    console.log('Routes API response:', data); // Debug log
     return data;
 
   } catch (error) {

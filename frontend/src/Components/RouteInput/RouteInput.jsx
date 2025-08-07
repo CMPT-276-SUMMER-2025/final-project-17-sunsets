@@ -324,7 +324,7 @@ const RouteInput = ({ selectedEvent, onBack, onRouteCalculated }) => {
         selectedTransitMode
       );
       
-      console.log('Route response:', routeResponse); // Debug log
+
 
              if (routeResponse.routes && routeResponse.routes.length > 0) {
          const route = routeResponse.routes[0]; // Get the first (and only) route from the response
@@ -345,7 +345,7 @@ const RouteInput = ({ selectedEvent, onBack, onRouteCalculated }) => {
            onRouteCalculated(routeData);
          }
       } else {
-        console.log('No routes found in response:', routeResponse); // Debug log
+
         setRouteError('No route found. Please try different preferences or locations.');
       }
 

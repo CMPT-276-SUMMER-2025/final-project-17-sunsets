@@ -89,8 +89,6 @@ export const fetchEvents = async (searchParams) => {
     const requestedSize = searchParams.eventCount || 10;
     const effectiveSize = 199; // Always fetch 199 events (safe under API limit of 200)
     
-    console.log(`Requested size: ${requestedSize}, Effective size: ${effectiveSize}`);
-    
     const params = new URLSearchParams({
       apikey: API_KEY,                    // Our API key for authentication
       size: effectiveSize,                 // How many events to return
@@ -102,8 +100,9 @@ export const fetchEvents = async (searchParams) => {
       params.append('city', searchParams.location);
     }
 
-    // Add keyword search if user provided keywords
-    if (searchParams.keywords) {
+    // Only add keyword search if user provided keywords AND no category is specified
+    // This prevents venue name confusion when filtering by category
+    if (searchParams.keywords && !searchParams.category) {
       params.append('keyword', searchParams.keywords);
     }
 
@@ -130,9 +129,6 @@ export const fetchEvents = async (searchParams) => {
 
     // Set currency to CAD for Canadian users
     params.append('currency', 'CAD');
-
-    // Debug: Log the API request parameters
-    console.log('Ticketmaster API Request Parameters:', Object.fromEntries(params));
     
     // Make the actual API request
     const response = await fetch(`${BASE_URL}?${params.toString()}`);
@@ -149,25 +145,29 @@ export const fetchEvents = async (searchParams) => {
     if (!data._embedded || !data._embedded.events) {
       return []; // Return empty array if no events found
     }
-
-    console.log(`API returned ${data._embedded.events.length} events from Event Search`);
     
     // Transform each event from Ticketmaster's format to our format
     let transformedEvents = data._embedded.events.map(transformEventData);
     
-    // Always fetch details for each event to get accurate pricing information
-    console.log(`Fetching detailed pricing information for ${transformedEvents.length} events`);
+    // Apply category filtering if specified
+    if (searchParams.category && searchParams.category.trim() !== '') {
+      const categoryFilter = searchParams.category.toLowerCase().trim();
+      
+      const filteredEvents = transformedEvents.filter(event => {
+        const eventCategory = event.category.toLowerCase();
+        const matches = eventCategory.includes(categoryFilter);
+        
+        return matches;
+      });
+      
+      transformedEvents = filteredEvents;
+    }
     
+    // Always fetch details for each event to get accurate pricing information
     const eventsWithPricing = await Promise.all(
       transformedEvents.map(async (event) => {
         try {
           const details = await fetchEventDetails(event.id);
-          
-          // Debug: Log the full details response for first few events
-          if (transformedEvents.indexOf(event) < 3) {
-            console.log(`Event ${event.id} (${event.title}) details:`, details);
-            console.log(`Price ranges for ${event.title}:`, details.priceRanges);
-          }
           
           // Re-transform the event with detailed pricing data
           const originalEvent = data._embedded.events.find(e => e.id === event.id);
@@ -189,15 +189,10 @@ export const fetchEvents = async (searchParams) => {
       event.priceRanges && event.priceRanges.length > 0
     );
     
-    console.log(`Search effectiveness:`);
-    console.log(`  Total events fetched: ${eventsWithPricing.length}`);
-    console.log(`  Events with pricing data: ${eventsWithPricingData.length}`);
-    console.log(`  Pricing coverage: ${((eventsWithPricingData.length / eventsWithPricing.length) * 100).toFixed(1)}%`);
-    
     // If price filtering is requested, check if we have enough data
     if ((searchParams.priceMin && searchParams.priceMin !== '') || (searchParams.priceMax && searchParams.priceMax !== '')) {
       if (eventsWithPricingData.length < 5) {
-        console.log(`Warning: Only ${eventsWithPricingData.length} events have pricing data. This might limit price filtering options.`);
+        // Warning: Limited pricing data available for filtering
       }
     }
     
@@ -206,68 +201,26 @@ export const fetchEvents = async (searchParams) => {
       const userMin = searchParams.priceMin ? parseFloat(searchParams.priceMin) : 0;
       const userMax = searchParams.priceMax ? parseFloat(searchParams.priceMax) : Infinity;
       
-      console.log(`Price filtering requested:`);
-      console.log(`  Raw priceMin: "${searchParams.priceMin}" (type: ${typeof searchParams.priceMin})`);
-      console.log(`  Raw priceMax: "${searchParams.priceMax}" (type: ${typeof searchParams.priceMax})`);
-      console.log(`  Parsed userMin: ${userMin} (type: ${typeof userMin})`);
-      console.log(`  Parsed userMax: ${userMax} (type: ${typeof userMax})`);
-      console.log(`Filtering events by price range: $${userMin} - $${userMax}`);
-      
       // Filter events based on price range
-      console.log(`Filtering ${eventsWithPricing.length} events with price range $${userMin} - $${userMax}`);
-      
       const filteredEvents = eventsWithPricing.filter(event => {
         const inRange = isEventInPriceRange(event.priceRanges, userMin, userMax);
-        if (!inRange) {
-          console.log(`Event "${event.title}" excluded - price ranges:`, event.priceRanges);
-        }
         return inRange;
       });
       
       transformedEvents = filteredEvents;
       
-      console.log(`Found ${transformedEvents.length} events within price range out of ${eventsWithPricing.length} total events`);
-      
       // Limit to the user's requested event count
       if (transformedEvents.length > requestedSize) {
-        console.log(`Limiting results to ${requestedSize} events (user requested ${requestedSize})`);
         transformedEvents = transformedEvents.slice(0, requestedSize);
       }
     } else {
       // No price filtering, but still use the events with pricing data
       transformedEvents = eventsWithPricing;
-      console.log(`Displaying all ${transformedEvents.length} events with pricing information`);
       
       // Limit to the user's requested event count
       if (transformedEvents.length > requestedSize) {
-        console.log(`Limiting results to ${requestedSize} events (user requested ${requestedSize})`);
         transformedEvents = transformedEvents.slice(0, requestedSize);
       }
-    }
-    
-    // Debug: Summary of pricing data
-    const finalEventsWithPricingData = transformedEvents.filter(event => 
-      event.priceRanges && event.priceRanges.length > 0
-    );
-    const finalEventsWithoutPricingData = transformedEvents.filter(event => 
-      !event.priceRanges || event.priceRanges.length === 0
-    );
-    
-    console.log(`=== FINAL PRICING SUMMARY ===`);
-    console.log(`Total events: ${transformedEvents.length}`);
-    console.log(`Events with pricing: ${finalEventsWithPricingData.length}`);
-    console.log(`Events without pricing: ${finalEventsWithoutPricingData.length}`);
-    console.log(`Percentage with pricing: ${((finalEventsWithPricingData.length / transformedEvents.length) * 100).toFixed(1)}%`);
-    console.log(`User requested: ${requestedSize} events`);
-    console.log(`Events before limiting: ${transformedEvents.length}`);
-    console.log(`Events after limiting: ${Math.min(transformedEvents.length, requestedSize)}`);
-    
-    // Log first few events with pricing for inspection
-    if (finalEventsWithPricingData.length > 0) {
-      console.log('Sample events with pricing:');
-      finalEventsWithPricingData.slice(0, 3).forEach(event => {
-        console.log(`- ${event.title}: ${JSON.stringify(event.priceRanges)}`);
-      });
     }
     
     return transformedEvents;
@@ -310,30 +263,23 @@ export const fetchEventDetails = async (eventId) => {
  * @param {number} userMax - User's maximum price
  * @returns {boolean} True if event has tickets within the price range
  */
-export const isEventInPriceRange = (priceRanges, userMin, userMax) => {
-  console.log(`isEventInPriceRange called with:`, { priceRanges, userMin, userMax });
-  
-  if (!priceRanges || priceRanges.length === 0) {
-    console.log('No price ranges available, returning false');
-    return false; // No pricing info available
-  }
+  export const isEventInPriceRange = (priceRanges, userMin, userMax) => {
+    if (!priceRanges || priceRanges.length === 0) {
+      return false; // No pricing info available
+    }
   
   // Check if any price range overlaps with user's range
   const result = priceRanges.some(range => {
-    const rangeMin = range.min;
-    const rangeMax = range.max;
+          const rangeMin = range.min;
+      const rangeMax = range.max;
+      
+      // Check if ranges overlap
+      const overlaps = rangeMin <= userMax && rangeMax >= userMin;
+      
+      return overlaps;
+    });
     
-    console.log(`Checking range: ${rangeMin} - ${rangeMax} against user range: ${userMin} - ${userMax}`);
-    
-    // Check if ranges overlap
-    const overlaps = rangeMin <= userMax && rangeMax >= userMin;
-    console.log(`Range overlaps: ${overlaps}`);
-    
-    return overlaps;
-  });
-  
-  console.log(`Final result for price range check: ${result}`);
-  return result;
+    return result;
 };
 
 // Note: Removed deprecated coordinate-based search functionality
