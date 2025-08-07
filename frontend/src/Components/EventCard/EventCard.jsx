@@ -79,10 +79,10 @@ const EventCard = ({ event, onRouteRequest }) => {
    */
   const formatPriceRanges = (priceRanges) => {
     // Debug: Log what priceRanges data we're receiving
-    console.log('formatPriceRanges received:', priceRanges);
+  
     
     if (!priceRanges || priceRanges.length === 0) {
-      console.log('No price ranges found, returning "Price varies"');
+      
       return 'Price varies';
     }
     
@@ -90,11 +90,11 @@ const EventCard = ({ event, onRouteRequest }) => {
     let minPrice = Infinity;
     
     priceRanges.forEach((range, index) => {
-      console.log(`Price range ${index}:`, range);
+      
       if (range.min < minPrice) minPrice = range.min;
     });
     
-    console.log(`Calculated min: ${minPrice}`);
+    
     
     // Return just the minimum price
     return `$${minPrice}`;

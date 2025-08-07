@@ -16,7 +16,7 @@ const Directions = ({ routeData, travelMode }) => {
   const [directions, setDirections] = useState(null);
 
   useEffect(() => {
-    console.log('Directions component received routeData:', routeData); // Debug log
+  
     // If routeData is valid, set the directions state variable to the routeData
     if (routeData && routeData.routes && routeData.routes.length > 0) {
       setDirections(routeData);

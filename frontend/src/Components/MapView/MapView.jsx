@@ -55,10 +55,6 @@ const MapView = ({ location, submittedLocation, events, currentRoute }) => {
       const script = document.createElement('script');
       const GOOGLE_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
       
-      // Debug: Check if environment variable is loaded
-      console.log('Google Maps API Key from env:', GOOGLE_API_KEY);
-      console.log('All env variables:', import.meta.env);
-      
       script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_API_KEY}&libraries=places`;
       script.async = true;
       script.defer = true;
@@ -230,10 +226,6 @@ const MapView = ({ location, submittedLocation, events, currentRoute }) => {
     });
     markersRef.current = [];
 
-    // Add new markers for each event with venue coordinates
-    console.log(`Total events: ${events.length}`);
-    console.log(`Events with venue coordinates: ${events.filter(e => e.venueCoordinates).length}`);
-    
     events.forEach(event => {
       // Always geocode the location string to get coordinates for markers
       const geocoder = new window.google.maps.Geocoder();
@@ -273,8 +265,6 @@ const MapView = ({ location, submittedLocation, events, currentRoute }) => {
 
           // Store marker reference for later removal
           markersRef.current.push(marker);
-        } else {
-          console.log(`Failed to geocode location for event: ${event.title} at ${event.location}`);
         }
       });
     });

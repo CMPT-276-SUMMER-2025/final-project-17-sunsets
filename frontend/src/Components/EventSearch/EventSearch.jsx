@@ -78,7 +78,7 @@ const EventSearch = ({ onSearch, currentLocation, isVisible = false, previousSea
     const searchParams = {
       ...searchData,
       location: currentLocation,
-      keywords: searchData.category  // API expects 'keywords' but we call it 'category'
+      category: searchData.category  // Pass category directly for proper filtering
     };
     
     // Send everything to the parent component
