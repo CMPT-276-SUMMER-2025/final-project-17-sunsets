@@ -66,6 +66,42 @@ const EventSearch = ({ onSearch, currentLocation, isVisible = false, previousSea
       setErrorMessage('Please enter a location in the header to search for events.');
       return;
     }
+
+    // Validate date inputs
+    const { startDate, endDate } = searchData;
+    // Get today's date in the format YYYY-MM-DD
+    const todayStr = new Date().toISOString().split('T')[0];
+    // Compute one year from today (inclusive upper bound)
+    const oneYearLaterStr = new Date(new Date().setFullYear(new Date().getFullYear() + 1))
+      .toISOString()
+      .split('T')[0];
+
+    // Check that start and end dates are not before today
+    if (startDate && startDate < todayStr) {
+      setErrorMessage('Start date cannot be before today.');
+      return;
+    }
+    if (endDate && endDate < startDate) {
+      setErrorMessage('End date cannot be before start date.');
+      return;
+    }
+
+    // Check that start and/or end dates are not set to 0000-00-00
+    if (startDate && startDate === '0000-00-00') {
+      setErrorMessage('Start date cannot be 0000-00-00.');
+      return;
+    }
+    if (endDate && endDate === '0000-00-00') {
+      setErrorMessage('End date cannot be 0000-00-00.');
+      return;
+    }
+    
+    // Keep end date within one year from today
+    if (endDate && endDate > oneYearLaterStr) {
+      setErrorMessage('End date cannot be more than 1 year from today.');
+      return;
+    }
+
     
     // Give button press feedback, then reset after 150ms
     setIsButtonActive(true);
@@ -187,6 +223,7 @@ const EventSearch = ({ onSearch, currentLocation, isVisible = false, previousSea
                 value={searchData.endDate}
                 onChange={handleChange}
                 min={searchData.startDate || new Date().toISOString().split('T')[0]}
+                max={new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString().split('T')[0]}
                 placeholder="End date"
               />
             </div>

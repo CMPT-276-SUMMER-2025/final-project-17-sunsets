@@ -73,7 +73,7 @@ const transformEventData = (ticketmasterEvent, detailedPricing = null) => {
  * 
  * @param {Object} searchParams - All the search criteria from the user
  * @param {string} searchParams.location - City name to search in
- * @param {string} searchParams.keywords - Optional keywords to filter events
+ * @param {string} searchParams.keywords - Optional keywords to filter events (such as for user interests)
  * @param {number} searchParams.eventCount - Number of events to return
  * @param {number} searchParams.radius - Search radius in kilometers (default 80)
  * @param {string} searchParams.startDate - Start date for event search (YYYY-MM-DD)
@@ -84,15 +84,19 @@ const transformEventData = (ticketmasterEvent, detailedPricing = null) => {
  */
 export const fetchEvents = async (searchParams) => {
   try {
+    // Ensure API key is present
+    if (!API_KEY) {
+      throw new Error('Missing Ticketmaster API key (VITE_TICKETMASTER_API_KEY).');
+    }
     // Build the API request URL with all the search parameters
-    // Always fetch 199 events for maximum user options (API limit is 200)
+    // Always fetch 199 events for maximum user options (API limit per call is 200)
     const requestedSize = searchParams.eventCount || 10;
-    const effectiveSize = 199; // Always fetch 199 events (safe under API limit of 200)
+    const effectiveSize = 199; 
     
     const params = new URLSearchParams({
-      apikey: API_KEY,                    // Our API key for authentication
-      size: effectiveSize,                 // How many events to return
-      sort: 'date,asc'                     // Sort events by date, earliest first
+      apikey: API_KEY, // Our API key for authentication
+      size: effectiveSize, // How many events to return (API limit per call is 200)
+      sort: 'date,asc' // Sort events by date, earliest first
     });
 
     // Add location search if user provided a city
@@ -100,26 +104,35 @@ export const fetchEvents = async (searchParams) => {
       params.append('city', searchParams.location);
     }
 
-    // Only add keyword search if user provided keywords AND no category is specified
-    // This prevents venue name confusion when filtering by category
-    if (searchParams.keywords && !searchParams.category) {
-      params.append('keyword', searchParams.keywords);
+    // Use keyword for open-ended searching
+    if (searchParams.category && String(searchParams.category).trim() !== '') {
+      params.append('keyword', String(searchParams.category).trim());
     }
 
     // Set search radius and units
     params.append('radius', searchParams.radius || 80);
-    params.append('unit', 'km');   // Use kilometers
+    params.append('unit', 'km');   // Use kilometers since we're in Canada
 
-    // Add date range filtering if user provided dates
-    if (searchParams.startDate) {
-      // Convert YYYY-MM-DD to ISO 8601 format with time (start of day)
-      const startDateTime = `${searchParams.startDate}T00:00:00Z`;
+    // Add date range filtering if user provided valid dates
+    const startDateStr = searchParams.startDate ? String(searchParams.startDate).trim() : '';
+    const endDateStr = searchParams.endDate ? String(searchParams.endDate).trim() : '';
+    const todayStr = new Date().toISOString().split('T')[0];
+
+    // Returns true if the string is a valid YYYY-MM-DD date
+    const isValidYyyyMmDd = (s) => /^\d{4}-\d{2}-\d{2}$/.test(s);
+
+    // Apply date range filtering if user provided dates are valid
+    const validStartDate = startDateStr && isValidYyyyMmDd(startDateStr) && startDateStr >= todayStr;
+    const validEndDate = endDateStr && isValidYyyyMmDd(endDateStr) && (!startDateStr || endDateStr >= startDateStr);
+
+    // Add start date parameter if user provided a valid start date
+    // (same for the end date parameter at in the following lines)
+    if (validStartDate) {
+      const startDateTime = `${startDateStr}T00:00:00Z`;
       params.append('startDateTime', startDateTime);
     }
-    
-    if (searchParams.endDate) {
-      // Convert YYYY-MM-DD to ISO 8601 format with time (end of day)
-      const endDateTime = `${searchParams.endDate}T23:59:59Z`;
+    if (validEndDate) {
+      const endDateTime = `${endDateStr}T23:59:59Z`;
       params.append('endDateTime', endDateTime);
     }
 
@@ -130,12 +143,21 @@ export const fetchEvents = async (searchParams) => {
     // Set currency to CAD for Canadian users
     params.append('currency', 'CAD');
     
-    // Make the actual API request
-    const response = await fetch(`${BASE_URL}?${params.toString()}`);
+    // Construct the url with our prameters, and make the actual API call
+    const url = `${BASE_URL}?${params.toString()}`;
+    const response = await fetch(url);
     
-    // Check if the request was successful
+    // Check if the request was successful, and if not throw an error that's caught
+    // in EventSearch.jsx and displayed nicely to the user.
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      let details = '';
+      try {
+        details = await response.text();
+      } catch (_) {
+        // Ignore potential secondary error when reading the response text so that
+        // we don't hide the original error indicated in the response.
+      }
+      throw new Error(`Ticketmaster API error ${response.status}${details ? `: ${details}` : ''}`);
     }
 
     // Parse the JSON response from the API
@@ -143,27 +165,15 @@ export const fetchEvents = async (searchParams) => {
     
     // Check if the API returned any events
     if (!data._embedded || !data._embedded.events) {
-      return []; // Return empty array if no events found
+      return [];
     }
     
     // Transform each event from Ticketmaster's format to our format
     let transformedEvents = data._embedded.events.map(transformEventData);
     
-    // Apply category filtering if specified
-    if (searchParams.category && searchParams.category.trim() !== '') {
-      const categoryFilter = searchParams.category.toLowerCase().trim();
-      
-      const filteredEvents = transformedEvents.filter(event => {
-        const eventCategory = event.category.toLowerCase();
-        const matches = eventCategory.includes(categoryFilter);
-        
-        return matches;
-      });
-      
-      transformedEvents = filteredEvents;
-    }
-    
     // Always fetch details for each event to get accurate pricing information
+    // This works by making calls to another TKMaster endpoint, namely 'Get Event Details'
+    // and is done for each returned event ID.
     const eventsWithPricing = await Promise.all(
       transformedEvents.map(async (event) => {
         try {
@@ -175,26 +185,13 @@ export const fetchEvents = async (searchParams) => {
           
           return eventWithDetailedPricing;
         } catch (error) {
-          console.warn(`Failed to fetch details for event ${event.id}:`, error);
           return {
             ...event,
-            priceRanges: []
+            priceRanges: [] // Empty array to indicate no pricing data available
           };
         }
       })
     );
-    
-    // Log search effectiveness
-    const eventsWithPricingData = eventsWithPricing.filter(event => 
-      event.priceRanges && event.priceRanges.length > 0
-    );
-    
-    // If price filtering is requested, check if we have enough data
-    if ((searchParams.priceMin && searchParams.priceMin !== '') || (searchParams.priceMax && searchParams.priceMax !== '')) {
-      if (eventsWithPricingData.length < 5) {
-        // Warning: Limited pricing data available for filtering
-      }
-    }
     
     // If price filtering is requested, filter the events
     if ((searchParams.priceMin && searchParams.priceMin !== '') || (searchParams.priceMax && searchParams.priceMax !== '')) {
@@ -225,11 +222,8 @@ export const fetchEvents = async (searchParams) => {
     
     return transformedEvents;
   } catch (error) {
-    // Log the error for debugging
-    console.error('Error fetching events from Ticketmaster API:', error);
-    
-    // Throw a user-friendly error message
-    throw new Error('Failed to fetch events. Please check your internet connection and try again.');
+    // Surface underlying error details to help users understand what went wrong
+    throw new Error(`Failed to fetch events. ${error.message || 'Please try again later.'}`);
   }
 };
 
@@ -241,16 +235,17 @@ export const fetchEvents = async (searchParams) => {
  */
 export const fetchEventDetails = async (eventId) => {
   try {
+    // Construct 'Get Event Details' endpoint url, and API call
     const response = await fetch(`${BASE_URL.replace('/events.json', '')}/events/${eventId}?apikey=${API_KEY}`);
     
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     
+    // Wait for the response to be parsed as JSON, then return the data
     const data = await response.json();
     return data;
   } catch (error) {
-    console.error('Error fetching event details:', error);
     throw new Error('Failed to fetch event details.');
   }
 };
@@ -281,6 +276,3 @@ export const fetchEventDetails = async (eventId) => {
     
     return result;
 };
-
-// Note: Removed deprecated coordinate-based search functionality
-// App now uses city-based search which is more user-friendly and reliable long term

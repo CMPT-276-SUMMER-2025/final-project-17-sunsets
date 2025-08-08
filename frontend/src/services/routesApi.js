@@ -83,7 +83,6 @@ export const calculateRoute = async (origin, destination, travelMode) => {
     // If the API call isn't successful, throw an error
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('Routes API Error Response:', errorText);
       throw new Error(`Routes API error: ${response.status} ${response.statusText} - ${errorText}`);
     }
 
@@ -92,7 +91,6 @@ export const calculateRoute = async (origin, destination, travelMode) => {
     return data;
 
   } catch (error) {
-    console.error('Error calculating route:', error);
     throw error;
   }
 };

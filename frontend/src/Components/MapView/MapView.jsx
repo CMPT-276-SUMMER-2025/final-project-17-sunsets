@@ -64,11 +64,6 @@ const MapView = ({ location, submittedLocation, events, currentRoute }) => {
         initializeMap();
       };
 
-      // If the script fails to load, log an error
-      script.onerror = () => {
-        console.error('Failed to load Google Maps API');
-      };
-
       // Add the script to the page head
       document.head.appendChild(script);
     };

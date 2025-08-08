@@ -68,8 +68,6 @@ const EventList = ({ searchParams, onEventsUpdate, onRouteRequest }) => {
       // Something went wrong - show error message to user
       setError(err.message || 'Failed to fetch events. Please try again.');
       
-      // Log the error for debugging
-      console.error('Error fetching events:', err);
     } finally {
       // Always hide loading spinner, whether the API call was successful or not
       setLoading(false);

@@ -139,7 +139,6 @@ const RouteInput = ({ selectedEvent, onBack, onRouteCalculated }) => {
   const reverseGeocode = (latitude, longitude) => {
     // Check if Google Maps API is available
     if (!window.google || !window.google.maps) {
-      console.error('Google Maps API not loaded');
       return Promise.reject('Google Maps API not available');
     }
 
@@ -226,7 +225,6 @@ const RouteInput = ({ selectedEvent, onBack, onRouteCalculated }) => {
             
           } catch (error) {
             // If reverse geocoding fails, fall back to a generic location message
-            console.error('Reverse geocoding failed:', error);
             setUserAddress('Current Location');
           }
           setIsLoadingLocation(false); // Loading indicator can be stopped since we have a geolocation (or an error)
@@ -350,7 +348,6 @@ const RouteInput = ({ selectedEvent, onBack, onRouteCalculated }) => {
       }
 
     } catch (error) {
-      console.error('Route calculation error:', error);
       setRouteError('Unable to calculate route. Please check your address and try again.');
     } finally {
       setIsCalculatingRoute(false);
