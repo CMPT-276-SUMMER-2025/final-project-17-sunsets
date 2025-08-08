@@ -28,3 +28,5 @@ https://metropolive.onrender.com/
 [Milestone 2 Report](docs/communication/CMPT-276_Milestone_2_Report.pdf)
 
 ## Project Videos
+
+[Milestone 1 Video](https://youtu.be/VnCeEgI4pUA)
