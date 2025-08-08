@@ -23,10 +23,10 @@ https://metropolive.onrender.com/
 
 [Milestone 1 Report](docs/communication/CMPT-276_Milestone_1_Report.pdf)
 
-[Milestone 1 Video](https://youtu.be/VnCeEgI4pUA)
-
 [Milestone 1.5 Report](docs/communication/CMPT-276_Milestone_1.5_Report.pdf)
 
 [Milestone 2 Report](docs/communication/CMPT-276_Milestone_2_Report.pdf)
 
 ## Project Videos
+
+[Milestone 1 Video](https://youtu.be/VnCeEgI4pUA)
