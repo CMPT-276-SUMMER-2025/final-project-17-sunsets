@@ -30,3 +30,5 @@ https://metropolive.onrender.com/
 ## Project Videos
 
 [Milestone 1 Video](https://youtu.be/VnCeEgI4pUA)
+
+[Milestone 2 Video](https://youtu.be/6PaAstPvRtU)
